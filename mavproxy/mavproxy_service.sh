@@ -1,3 +1,6 @@
+## NOT IN USE. ##
+## Now using /etc/rc.local
+
 #!/bin/bash
 echo "MAVProxy service starting..."
 echo $USER

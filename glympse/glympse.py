@@ -41,6 +41,11 @@ def send_message(title, msg):
     }
 )
 
+# Connect to mavproxy
+logging.info("[Dronekit] Connecting the drone through udp:127.0.0.1:14550")
+vehicle = connect('127.0.0.1:14550', wait_ready=True)
+logging.info("[Dronekit] Connected")
+
 # Craete account
 # logging.info("[Glympse] Creating account")
 # response = requests.post(
@@ -138,10 +143,8 @@ logging.info("[Glympse] Set Disco thumbnail image")
 # More information of glympse API:
 # https://developer.glympse.com/docs/core/api/reference/tickets/append_location/post
 # https://developer.glympse.com/docs/core/api/reference/objects/location-points
-logging.info("[Dronekit] Connecting the drone through udp:127.0.0.1:14550")
-vehicle = connect('127.0.0.1:14550', wait_ready=True)
-logging.info("[Dronekit] Connected")
-send_message("%s Status Update" % drone_name, "Connected to mavproxy, ready to send GPS.")
+
+# send_message("%s Status Update" % drone_name, "Connected to mavproxy, ready to send GPS.")
 
 while True:
 
@@ -164,7 +167,6 @@ while True:
         )
     else:
         logging.info("[Dronekit] GPS No Fix.")
-
-    time.sleep(1)
+        time.sleep(5)
 
 quit()

@@ -1,2 +1,4 @@
 .vscode/sftp.json
-glympse/glympse.log
+*.log
+*.img
+*.px4

@@ -1,0 +1,26 @@
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+# Start MAVProxy
+(
+# echo "Start MAVProxy" $(date)
+# echo "sudo screen -r mavproxy to open the screen"
+# cd /home/bellergy/
+# screen -dmS mavproxy \
+# /usr/local/bin/mavproxy.py --non-interactive --daemon --aircraft pxpi \
+# --master=/dev/ttyS0 --baudrate 57600 \
+# --out udpbcast:192.168.192.255:14550 \
+# --out 127.0.0.1:14550 --out 127.0.0.1:14551
+) >> /tmp/rc.log 2>&1
+
+exit 0

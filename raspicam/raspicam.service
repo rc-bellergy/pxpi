@@ -1,0 +1,9 @@
+[Unit]
+Description=raspivid
+After=network-online.target
+
+[Service]
+ExecStart=/home/bellergy/raspicam/raspicam.sh
+
+[Install]
+WantedBy=default.target
