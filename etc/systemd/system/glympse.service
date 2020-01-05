@@ -1,5 +1,5 @@
 [Unit]
-Description=glympse
+Description=Glympse Location Service
 After=network-online.target
 
 [Service]
