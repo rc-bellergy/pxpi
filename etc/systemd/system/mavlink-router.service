@@ -6,7 +6,7 @@ After=network-online.target zerotier-one.service
 [Service]
 Type=forking
 PIDFile=/var/run/mavlink-routerd.pid
-ExecStart=/usr/bin/mavlink-routerd /dev/ttyAMA0:57600 -e 192.168.192.101:14550
+ExecStart=/usr/bin/mavlink-routerd -e 192.168.192.255:14550
 Restart=on-failure
 RestartSec=3
 
