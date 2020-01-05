@@ -1,0 +1,11 @@
+[Unit]
+Description=glympse
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/python2.7 /home/bellergy/glympse/glympse.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,14 @@
+[Unit]
+Description=MAVLink Router
+Wants=zerotier-one.service
+After=network-online.target zerotier-one.service
+
+[Service]
+Type=forking
+PIDFile=/var/run/mavlink-routerd.pid
+ExecStart=/usr/bin/mavlink-routerd /dev/ttyAMA0:57600 -e 192.168.192.101:14550
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
