@@ -10,7 +10,7 @@ import logging
 import requests,json
 from dronekit import connect
 
-logging.basicConfig(pathname="/home/bellergy/glympse/",filename='glympse.log', format='%(asctime)s - %(message)s', level=logging.INFO, filemode='w')
+logging.basicConfig(pathname="/tmp/glympse.log", format='%(asctime)s - %(message)s', level=logging.INFO, filemode='w')
 logging.StreamHandler()
 logging.info("**Glympse script start**")
 
