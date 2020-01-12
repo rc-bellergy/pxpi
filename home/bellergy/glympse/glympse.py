@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 
+# Funcations:
 # Connect Glympse by REST API
-# Send current location
+# Send Glympse shared link through Pushbullet
+# Every 5 sec., get GPS data using MavSDK
+# Send current location to Glympse
+
 # Created by: rc@bellergy.com
-# Updated: 20191226
 
 import sys,os,time,datetime
 import logging
@@ -167,6 +170,7 @@ while True:
         )
     else:
         logging.info("[Dronekit] GPS No Fix.")
-        time.sleep(5)
+        
+    time.sleep(5)
 
 quit()

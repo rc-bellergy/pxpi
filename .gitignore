@@ -2,5 +2,4 @@
 *.log
 *.img
 *.px4
-/px4-firmware/*
-/rpi-images/*
+_resources/*

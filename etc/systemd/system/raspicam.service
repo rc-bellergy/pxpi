@@ -1,6 +1,7 @@
 [Unit]
 Description=raspivid
-After=network-online.target
+Wants=zerotier-one.service
+After=network-online.target zerotier-one.service
 
 [Service]
 ExecStart=/home/bellergy/raspicam/raspicam.sh

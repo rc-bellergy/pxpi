@@ -1,6 +1,7 @@
 [Unit]
 Description=Glympse Location Service
-After=network-online.target
+Wants=zerotier-one.service
+After=network-online.target zerotier-one.service
 
 [Service]
 ExecStart=/usr/bin/python2.7 /home/bellergy/glympse/glympse.py
