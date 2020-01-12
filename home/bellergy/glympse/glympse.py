@@ -110,7 +110,7 @@ title = "%s's GPS share link" % (drone_name)
 send_message(title, msg)
 logging.info("[Pushbullet] Sent invite message to Pushbullet")
 
-# Glympse API: setting identifier to Disco ID
+# Glympse API: setting identifier to the drone_name
 # https://developer.glympse.com/docs/core/api/reference/tickets/append_data/post
 response = requests.post(
     gateway+"tickets/" + ticket + "/append_data",
@@ -124,7 +124,7 @@ response = requests.post(
 )
 
 check_return(response)
-logging.info("[Glympse] Set identifier to Disco ID")
+logging.info("[Glympse] Set identifier to " + drone_name)
 
 # Glympse API: setting Disco thumbnail image
 # https://developer.glympse.com/docs/core/api/reference/tickets/append_data/post
@@ -135,7 +135,7 @@ response = requests.post(
         't': get_time(),
         'pid': 0,
         'n': 'avatar',
-        'v': 'https://uavpal.com/img/disco.png',
+        'v': 'http://bellergy.com/wp-content/uploads/Parrot_Disco_FPV.jpg',
     }]
 )
 check_return(response)
