@@ -47,12 +47,6 @@ def send_message(title, msg):
     }
 )
 
-# Connect to mavlink
-logging.info("Waitting heartbeat from " + drone_endpoint)
-mav = mavutil.mavlink_connection(drone_endpoint)
-mav.wait_heartbeat()
-logging.info("Heartbeat received!")
-
 # Craete account
 # logging.info("[Glympse] Creating account")
 # response = requests.post(
@@ -156,6 +150,12 @@ logging.info("[Glympse] Set Disco thumbnail image")
 # Mavlink GPS message
 # https://mavlink.io/en/messages/common.html#GPS_RAW_INT
 
+# Connect to mavlink
+logging.info("Waitting heartbeat from " + drone_endpoint)
+mav = mavutil.mavlink_connection(drone_endpoint)
+mav.wait_heartbeat()
+logging.info("Heartbeat received!")
+
 while True:
 
     # If GPS fix, send data to Glympse
@@ -163,6 +163,7 @@ while True:
     gps = mav.recv_match(type='GPS_RAW_INT', blocking=True)
     if gps is not None:
         logging.info(gps)
+        # Send message only when GPS Fix ready
         if (gps.fix_type > 1):
             data = [[get_time(),
             gps.lat * 0.1,
@@ -170,12 +171,12 @@ while True:
             vfr.groundspeed * 100,
             vfr.heading,
             vfr.alt]]
-        logging.info("Send GPS data: %s" % data)
-        response = requests.post(
-            gateway+"tickets/" + ticket + "/append_location",
-            json=data,
-            headers=auth_header
-        )
+            logging.info("Send GPS data: %s" % data)
+            response = requests.post(
+                gateway+"tickets/" + ticket + "/append_location",
+                json=data,
+                headers=auth_header
+            )
         
     time.sleep(5)
 

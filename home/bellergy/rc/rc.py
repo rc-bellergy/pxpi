@@ -1,53 +1,53 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
-# Listen the channel change
+# Listen the RC channel change
 # then take related action
-
-# There is how to get channels data from dronekit, but don't know how to listen it.
-# https://dronekit-python.readthedocs.io/en/latest/automodule.html#dronekit.Vehicle.channels
+# https://mavlink.io/en/messages/common.html#RC_CHANNELS
  
 import time
 import os
 import logging
-from dronekit import connect
+import pymavlink.mavutil as mavutil
+import config
 
-logging.basicConfig(pathname="/home/bellergy/rc/",filename='rc.log', format='%(asctime)s - %(message)s', level=logging.INFO, filemode='w')
+logging.basicConfig(pathname="/tmp/rc.log", format='%(asctime)s - %(message)s', level=logging.INFO, filemode='w')
 logging.StreamHandler()
-print("**RC script start**")
+logging.info("**RC script start**")
 
-PORT = '127.0.0.1:14551'
+drone_endpoint = config.drone["endpoint"]
 video_streaming = False
 
-def channels_callback(self,attr_name, value):
-    switchVideoStreaming(value[6])
-    # Channel 8: on/off video recording
+# Connect to mavlink
+logging.info("Waitting heartbeat from " + drone_endpoint)
+mav = mavutil.mavlink_connection(drone_endpoint)
+mav.wait_heartbeat()
+logging.info("Heartbeat received!")
 
-def switchVideoStreaming(value):
-    global video_streaming
-    if value > 1500:
-        if video_streaming != True:
+# Listen channels
+logging.info("Waitting mavlink 'RC_CHANNELS'")
+
+while True:
+
+    # Watch the channel 8.
+    # If the switch position on middle, start the video streaming, else stop it.
+
+    # Note: It assumes that 
+    # 1. The systemd raspicam service has been set up;
+    # 2. The channel 8 mapped a 3 position switch  
+    
+    channels = mav.recv_match(type='RC_CHANNELS', blocking=True)
+    ch8 = channels.chan8_raw
+    if video_streaming is not True:
+        if ch8 > 1200 and ch8 < 1800:
+            os.system('sudo systemctl start raspicam')
+            logging.info("Video streaming started")
             video_streaming = True
-            # Start video streaming service
-            # os.system('sudo systemd start raspicam')
-            print("Video streaming started")
             # TODO: Send status to mavlink
     else:
-        if video_streaming == True:
+        if ch8 <=1200 or ch8 >=1800:
+            os.system('sudo systemctl stop raspicam')
+            logging.info("Video streaming stopped")
             video_streaming = False
-            # Stop video streaming service
-            # os.system('sudo systemd stop raspicam')
-            print("Video streaming stopped")
             # TODO: Send status to mavlink
 
-
-print("Connecting %s" % PORT)
-vehicle = connect(PORT, wait_ready=True, baud=57600)
-# init the video streaming service
-switchVideoStreaming(vehicle.channels[6])
-
-# Add listener to readio channels
-vehicle.add_attribute_listener("channels", channels_callback)
-
-# keep the program runs ;)
-while True:
-    time.sleep(10)
+quit()

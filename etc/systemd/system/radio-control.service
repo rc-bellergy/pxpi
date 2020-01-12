@@ -1,0 +1,14 @@
+[Unit]
+Description=Radio Control Service
+Wants=mavlink-router.service
+After=network-online.target mavlink-router.service
+
+[Service]
+Type=forking
+PIDFile=/var/run/radio-control.pid
+ExecStart=/usr/bin/python2.7 /home/bellergy/rc/rc.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
