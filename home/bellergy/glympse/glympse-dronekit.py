@@ -11,7 +11,7 @@
 import sys,os,time,datetime
 import logging
 import requests,json
-import pymavlink.mavutil as mavutil
+from dronekit import connect
 
 logging.basicConfig(pathname="/tmp/glympse.log", format='%(asctime)s - %(message)s', level=logging.INFO, filemode='w')
 logging.StreamHandler()
@@ -44,11 +44,10 @@ def send_message(title, msg):
     }
 )
 
-# Connect to mavlink
-logging.info("Waitting heartbeat from udp:127.0.0.1:14550")
-mav = mavutil.mavlink_connection('udpin:127.0.0.1:14550')
-mav.wait_heartbeat()
-logging.info("Heartbeat received!")
+# Connect to mavproxy
+logging.info("[Dronekit] Connecting the drone through udp:127.0.0.1:14550")
+vehicle = connect('127.0.0.1:14550', wait_ready=True)
+logging.info("[Dronekit] Connected")
 
 # Craete account
 # logging.info("[Glympse] Creating account")
@@ -142,34 +141,35 @@ check_return(response)
 logging.info("[Glympse] Set Disco thumbnail image")
 
 # Reading out drone GPS coordinates every 5 seconds to update Glympse via API
+# Where is the drone GPS data? I use the DroneKit.
 
 # More information of glympse API:
 # https://developer.glympse.com/docs/core/api/reference/tickets/append_location/post
 # https://developer.glympse.com/docs/core/api/reference/objects/location-points
 
-# Mavlink GPS message
-# https://mavlink.io/en/messages/common.html#GPS_RAW_INT
+# send_message("%s Status Update" % drone_name, "Connected to mavproxy, ready to send GPS.")
 
 while True:
 
     # If GPS fix, send data to Glympse
-    vfr = mav.recv_match(type='VFR_HUD', blocking=True)
-    gps = mav.recv_match(type='GPS_RAW_INT', blocking=True)
-    if gps is not None:
-        logging.info(gps)
-        if (gps.fix_type > 1):
-            data = [[get_time(),
-            gps.lat * 0.1,
-            gps.lon * 0.1,
-            vfr.groundspeed * 100,
-            vfr.heading,
-            vfr.alt]]
+    fix_type = vehicle.gps_0.fix_type
+    logging.info("vehicle.gps_0.fix_type: %s" % fix_type)
+
+    if fix_type > 1:
+        data = [[get_time(),
+            vehicle.location.global_frame.lat * 1000000,
+            vehicle.location.global_frame.lon * 1000000,
+            vehicle.groundspeed,
+            0,
+            vehicle.location.global_frame.alt]]
         logging.info("Send GPS data: %s" % data)
         response = requests.post(
             gateway+"tickets/" + ticket + "/append_location",
             json=data,
             headers=auth_header
         )
+    else:
+        logging.info("[Dronekit] GPS No Fix.")
         
     time.sleep(5)
 
