@@ -3,8 +3,9 @@
 # Funcations:
 # Connect Glympse by REST API
 # Send Glympse shared link through Pushbullet
-# Every 5 sec., get GPS data using MavSDK
-# Send current location to Glympse
+# Connect mavlink through mavlink-router 
+# Every 5 sec., get GPS data using Mavlink
+# Send current location, groundspeed, heading, altitude to Glympse
 
 # Created by: rc@bellergy.com
 
@@ -12,16 +13,18 @@ import sys,os,time,datetime
 import logging
 import requests,json
 import pymavlink.mavutil as mavutil
+import config
 
 logging.basicConfig(pathname="/tmp/glympse.log", format='%(asctime)s - %(message)s', level=logging.INFO, filemode='w')
 logging.StreamHandler()
 logging.info("**Glympse script start**")
 
-drone_name = "PxPi"
-gateway = "https://api.glympse.com/v2/"
-glympse_api_key = "0i4vFATHsIo4OZm9bheI"
-pb_gateway = "https://api.pushbullet.com/v2/pushes"
-pb_access_token = "o.8wRiGgA35DDAYfLRX6OOyVmggwqU80VW"
+drone_name = config.drone["name"]
+drone_endpoint = config.drone["endpoint"]
+gateway = config.glympse["gateway"]
+glympse_api_key = config.glympse["key"]
+pb_gateway = config.pushbullet["gateway"]
+pb_access_token = config.pushbullet["key"]
 
 def check_return(response):
     if response.status_code != 200 or response.json()["result"] != "ok":
@@ -45,8 +48,8 @@ def send_message(title, msg):
 )
 
 # Connect to mavlink
-logging.info("Waitting heartbeat from udp:127.0.0.1:14550")
-mav = mavutil.mavlink_connection('udpin:127.0.0.1:14550')
+logging.info("Waitting heartbeat from " + drone_endpoint)
+mav = mavutil.mavlink_connection(drone_endpoint)
 mav.wait_heartbeat()
 logging.info("Heartbeat received!")
 
@@ -60,8 +63,11 @@ logging.info("Heartbeat received!")
 # account = response.json()["response"]
 # glympse_user_id = account["id"]
 # glympse_password = account["password"]
-glympse_user_id="0Y73-FQ8A-7DKZA"
-glympse_password="ev_SF519dbd7JORLq_n"
+# logging.info("[Glympse] User:" + glympse_user_id)
+# logging.info("[Glympse] Password:" + glympse_password)
+
+glympse_user_id = config.glympse["user_id"]
+glympse_password = config.glympse["user_pw"]
 
 # Login
 logging.info("[Glympse] Login")
@@ -141,7 +147,7 @@ response = requests.post(
 check_return(response)
 logging.info("[Glympse] Set Disco thumbnail image")
 
-# Reading out drone GPS coordinates every 5 seconds to update Glympse via API
+# Reading drone GPS coordinates every 5 seconds to update Glympse via API
 
 # More information of glympse API:
 # https://developer.glympse.com/docs/core/api/reference/tickets/append_location/post
