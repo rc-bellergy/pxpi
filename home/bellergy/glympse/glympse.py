@@ -3,28 +3,40 @@
 # Funcations:
 # Connect Glympse by REST API
 # Send Glympse shared link through Pushbullet
-# Connect mavlink through mavlink-router 
+# Connect mavlink through mavlink-router
 # Every 5 sec., get GPS data using Mavlink
 # Send current location, groundspeed, heading, altitude to Glympse
 
 # Created by: rc@bellergy.com
 
-import sys,os,time,datetime
+import sys
+import os
+import time
+import datetime
 import logging
-import requests,json
+import requests
+import json
 import pymavlink.mavutil as mavutil
 import config
 
-logging.basicConfig(pathname="/tmp/glympse.log", format='%(asctime)s - %(message)s', level=logging.INFO, filemode='w')
-logging.StreamHandler()
+# Init logging
+dir_path = os.path.dirname(os.path.realpath(__file__))
+logging.basicConfig(filename=dir_path + "/glympse.log",
+                    format='%(asctime)s - %(message)s', level=logging.INFO, filemode='w')
+console = logging.StreamHandler()
+logger = logging.getLogger()
+logger.addHandler(console)
+
 logging.info("**Glympse script start**")
 
+# Load config
 drone_name = config.drone["name"]
 drone_endpoint = config.drone["endpoint"]
 gateway = config.glympse["gateway"]
 glympse_api_key = config.glympse["key"]
 pb_gateway = config.pushbullet["gateway"]
 pb_access_token = config.pushbullet["key"]
+
 
 def check_return(response):
     if response.status_code != 200 or response.json()["result"] != "ok":
@@ -36,16 +48,17 @@ def check_return(response):
 def get_time():
     return int(time.time()) * 1000
 
+
 def send_message(title, msg):
     response = requests.post(
-    pb_gateway,
-    headers={"Access-Token": pb_access_token},
-    json={
-        'type': 'note',
-        'title': title,
-        'body': msg
-    }
-)
+        pb_gateway,
+        headers={"Access-Token": pb_access_token},
+        json={
+            'type': 'note',
+            'title': title,
+            'body': msg
+        }
+    )
 
 # Craete account
 # logging.info("[Glympse] Creating account")
@@ -59,6 +72,7 @@ def send_message(title, msg):
 # glympse_password = account["password"]
 # logging.info("[Glympse] User:" + glympse_user_id)
 # logging.info("[Glympse] Password:" + glympse_password)
+
 
 glympse_user_id = config.glympse["user_id"]
 glympse_password = config.glympse["user_pw"]
@@ -105,7 +119,8 @@ invite_id = response.json()["response"]["id"]
 logging.info("[Glympse] Invite Id: " + invite_id)
 
 # Send Invite Message to Pushbullet
-msg = "You can track the location of your %s here: https://glympse.com/%s" % (drone_name, invite_id)
+msg = "You can track the location of your %s here: https://glympse.com/%s" % (
+    drone_name, invite_id)
 title = "%s's GPS share link" % (drone_name)
 send_message(title, msg)
 logging.info("[Pushbullet] Sent invite message to Pushbullet")
@@ -166,18 +181,20 @@ while True:
         # Send message only when GPS Fix ready
         if (gps.fix_type > 1):
             data = [[get_time(),
-            gps.lat * 0.1,
-            gps.lon * 0.1,
-            vfr.groundspeed * 100,
-            vfr.heading,
-            vfr.alt]]
+                     gps.lat * 0.1,
+                     gps.lon * 0.1,
+                     vfr.groundspeed * 100,
+                     vfr.heading,
+                     vfr.alt]]
             logging.info("Send GPS data: %s" % data)
             response = requests.post(
                 gateway+"tickets/" + ticket + "/append_location",
                 json=data,
                 headers=auth_header
             )
-        
+    else:
+        logging.info("No GPS Fix")
+
     time.sleep(5)
 
 quit()

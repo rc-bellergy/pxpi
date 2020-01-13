@@ -3,15 +3,21 @@
 # Listen the RC channel change
 # then take related action
 # https://mavlink.io/en/messages/common.html#RC_CHANNELS
- 
+
 import time
 import os
 import logging
 import pymavlink.mavutil as mavutil
 import config
 
-logging.basicConfig(pathname="/tmp/rc.log", format='%(asctime)s - %(message)s', level=logging.INFO, filemode='w')
-logging.StreamHandler()
+# Init logging
+dir_path = os.path.dirname(os.path.realpath(__file__))
+logging.basicConfig(filename=dir_path + "/rc.log",
+                    format='%(asctime)s - %(message)s', level=logging.INFO, filemode='w')
+console = logging.StreamHandler()
+logger = logging.getLogger()
+logger.addHandler(console)
+
 logging.info("**RC script start**")
 
 drone_endpoint = config.drone["endpoint"]
@@ -24,17 +30,17 @@ mav.wait_heartbeat()
 logging.info("Heartbeat received!")
 
 # Listen channels
-logging.info("Waitting mavlink 'RC_CHANNELS'")
+logging.info("Watching the mavlink 'RC_CHANNELS'")
 
 while True:
 
     # Watch the channel 8.
     # If the switch position on middle, start the video streaming, else stop it.
 
-    # Note: It assumes that 
+    # Note: It assumes:
     # 1. The systemd raspicam service has been set up;
-    # 2. The channel 8 mapped a 3 position switch  
-    
+    # 2. The RC channel 8 mapped to a 3 position switch of the radio control
+
     channels = mav.recv_match(type='RC_CHANNELS', blocking=True)
     ch8 = channels.chan8_raw
     if video_streaming is not True:
@@ -44,10 +50,11 @@ while True:
             video_streaming = True
             # TODO: Send status to mavlink
     else:
-        if ch8 <=1200 or ch8 >=1800:
+        if ch8 <= 1200 or ch8 >= 1800:
             os.system('sudo systemctl stop raspicam')
             logging.info("Video streaming stopped")
             video_streaming = False
             # TODO: Send status to mavlink
+    time.sleep(5)
 
 quit()
