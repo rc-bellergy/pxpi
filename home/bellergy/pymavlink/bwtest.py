@@ -31,11 +31,11 @@ bytes_recv = 0
 
 while True:
     #send some messages to the target system with dummy data
-    master.mav.heartbeat_send(1, 1)
-    master.mav.sys_status_send(1, 2, 3, 4, 5, 6, 7)
-    master.mav.gps_raw_send(1, 2, 3, 4, 5, 6, 7, 8, 9)
-    master.mav.attitude_send(1, 2, 3, 4, 5, 6, 7)
-    master.mav.vfr_hud_send(1, 2, 3, 4, 5, 6)
+    master.mav.heartbeat_send(mavutil.mavlink.MAV_TYPE_ONBOARD_CONTROLLER, mavutil.mavlink.MAV_AUTOPILOT_INVALID, 0, 0, 0)
+    # master.mav.sys_status_send(1, 2, 3, 4, 5, 6, 7)
+    # master.mav.gps_raw_send(1, 2, 3, 4, 5, 6, 7, 8, 9)
+    # master.mav.attitude_send(1, 2, 3, 4, 5, 6, 7)
+    # master.mav.vfr_hud_send(1, 2, 3, 4, 5, 6)
 
     #Check for incoming data on the serial port and count
     #how many mesages of each type have been received
