@@ -16,7 +16,7 @@ import time
 #           "Respond with a ping message")
 #     quit()
 
-UDP = "127.0.0.1:14550"
+UDP = "192.168.192.103:14550"
 SYSTEM_ID = 50
 
 srcSystem = SYSTEM_ID

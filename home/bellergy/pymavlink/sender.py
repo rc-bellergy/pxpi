@@ -1,8 +1,6 @@
 #!/usr/bin/python
 
 # Testing send mavlink message
-# The mavlink-router setting is
-# mavlink-routerd -e 127.0.0.1:14550 0.0.0.0:5760
 
 from __future__ import print_function
 from threading import Thread
@@ -12,8 +10,8 @@ import pymavlink.mavutil as mavutil
 import sys
 import time
 
-UDP = "127.0.0.1:14550"
-SOURCE_SYSTEM_ID = 99
+UDP = "192.168.192.103:14550" # The IP and port of QGroundcontrol. It can't be a broadcast IP.
+SOURCE_SYSTEM_ID = 99 # Me, the sender
 TARGET_SYSTEM_ID = 255 # QGroundcontrol
 
 mav = mavutil.mavlink_connection('udpout:' + UDP, source_system=SOURCE_SYSTEM_ID)
