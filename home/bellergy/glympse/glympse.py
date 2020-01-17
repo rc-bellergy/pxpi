@@ -177,7 +177,6 @@ while True:
     vfr = mav.recv_match(type='VFR_HUD', blocking=True)
     gps = mav.recv_match(type='GPS_RAW_INT', blocking=True)
     if gps is not None:
-        logging.info(gps)
         # Send message only when GPS Fix ready
         if (gps.fix_type > 1):
             data = [[get_time(),
@@ -192,8 +191,10 @@ while True:
                 json=data,
                 headers=auth_header
             )
-    else:
-        logging.info("No GPS Fix")
+            logging.info(response)
+        else:
+            # GPS not fix, log the raw data
+            logging.info(gps)
 
     time.sleep(5)
 
