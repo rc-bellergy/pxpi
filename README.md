@@ -10,10 +10,11 @@ It is the source code of the Raspberry Pi files.
 - The pilot can use radio control to switch on/off the video streaming;
 
 ## Source Files
-| files | descriptions |
-| --- | --- |
-| glympse/glympse.py | Send GPS position to Glympse API |
+| files                                    | descriptions                                  |
+| ---------------------------------------- | --------------------------------------------- |
+| glympse/glympse.py                       | Send GPS position to Glympse API              |
 | mavlink-router-service/mavlink-router.sh | strat mavlink-router service when system boot |
-| raspicam/raspicam.sh | start raspicam service when system boot |
-| rc/rc.py | Switch video streaming on/off |
+| raspicam/raspicam.sh                     | start raspicam service when system boot       |
+| rc/rc.py                                 | Switch video streaming on/off                 |
+
 
