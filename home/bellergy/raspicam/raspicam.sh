@@ -5,14 +5,15 @@
 # Max bandwidth: 187.5kB/sec (1500000 bits / 8000)
 
 NOW=$(date +"%Y-%m-%d")
-VIDEO_FILE=${PWD}/$NOW/cam.mp4
-UDP_IP=192.168.192.103
+VIDEO_FILE=${PWD}/videos/$NOW-livecam.h264
+UDP_IP=192.168.192.101
 UDP_PORT=5600
 
 /usr/bin/raspivid -n -w 360 -h 202 -rot 180 -b 1500000 -fps 15 -ISO 800 -vs -drc high -t 0 -o - | \
-tee test.h264 | \
+tee $VIDEO_FILE | \
 /usr/bin/gst-launch-1.0 -v fdsrc ! \
 h264parse ! rtph264pay config-interval=10 pt=96 ! \
+
 udpsink host=$UDP_IP port=$UDP_PORT
 
 ### Don't use multiudpsink, it increases the bandwidth
