@@ -1,0 +1,31 @@
+# interfaces(5) file used by ifup(8) and ifdown(8)
+
+# Please note that this file is written to be used with dhcpcd
+# For static IP, consult /etc/dhcpcd.conf and 'man dhcpcd.conf'
+
+# Include files from /etc/network/interfaces.d:
+source-directory /etc/network/interfaces.d
+
+# Strat the bonding network [TESTING]
+
+# Define slaves   
+auto eth0
+iface eth0 inet manual
+    bond-master bond0
+    bond-primary eth0
+    bond-mode active-backup
+   
+auto wlan0
+iface wlan0 inet manual
+    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+    bond-master bond0
+    bond-primary eth0
+    bond-mode active-backup
+
+# Define master
+auto bond0
+iface bond0 inet dhcp
+    bond-slaves none
+    bond-primary eth0
+    bond-mode active-backup
+    bond-miimon 100
