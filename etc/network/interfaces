@@ -12,20 +12,21 @@ source-directory /etc/network/interfaces.d
 auto eth0
 iface eth0 inet manual
     bond-master bond0
-    bond-primary eth0
+    bond-primary wlan0
     bond-mode active-backup
-   
+
+# Define wlan0 is primary slave
 auto wlan0
 iface wlan0 inet manual
     wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
     bond-master bond0
-    bond-primary eth0
+    bond-primary wlan0
     bond-mode active-backup
 
 # Define master
 auto bond0
 iface bond0 inet dhcp
     bond-slaves none
-    bond-primary eth0
+    bond-primary wlan0
     bond-mode active-backup
     bond-miimon 100
