@@ -2,6 +2,7 @@
 *.log
 *.img
 *.px4
+*.mp4
 _resources/*
 **/config.py
 **/config.pyc

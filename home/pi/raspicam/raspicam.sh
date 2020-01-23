@@ -10,12 +10,12 @@ OUT_VIDEO=${PWD}/videos/$NOW.mp4
 UDP_IP=192.168.192.104 # The iPhone
 UDP_PORT=5600
 
-/usr/bin/raspivid -w 360 -h 202 --rotation 180 --bitrate 1440000 -fps 15 \
+/usr/bin/raspivid -w 360 -h 202 --rotation 180 --bitrate 1440000 -fps 20 \
     --flush --vstab --nopreview --timeout 0 --output - | \
 /usr/bin/tee $TMP_VIDEO | \
 /usr/bin/gst-launch-1.0 fdsrc ! \
-h264parse ! rtph264pay config-interval=10 pt=96 ! \
-udpsink host=$UDP_IP port=$UDP_PORT
+    h264parse ! rtph264pay ! \
+    udpsink host=$UDP_IP port=$UDP_PORT
 
 set -e
 function convert {
