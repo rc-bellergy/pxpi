@@ -4,7 +4,8 @@ Wants=zerotier-one.service
 After=network-online.target zerotier-one.service
 
 [Service]
-ExecStart=/home/bellergy/raspicam/raspicam.sh
+ExecStart=/home/pi/raspicam/raspicam.sh
 
 [Install]
 WantedBy=default.target
+cat /boot/config.txt

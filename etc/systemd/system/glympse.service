@@ -4,7 +4,7 @@ Wants=zerotier-one.service
 After=network-online.target zerotier-one.service
 
 [Service]
-ExecStart=/usr/bin/python2.7 /home/bellergy/glympse/glympse.py
+ExecStart=/usr/bin/python2.7 /home/pi/glympse/glympse.py
 Restart=on-failure
 RestartSec=5
 
