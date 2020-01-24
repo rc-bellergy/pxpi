@@ -53,9 +53,3 @@ From: camera source
 > sink: ANY
 ---
 To: video player
-
-
-# Try FFMPEG
-## Install
-
-    sudo apt-get install ffmpeg 

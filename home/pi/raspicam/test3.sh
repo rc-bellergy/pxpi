@@ -1,18 +1,10 @@
 #!/bin/bash
 
-# Features:
-# 1. read raspicam and stream the video to GCS
-# 2. save the video to .h264 
-# 3. convert the .h264 to .mp4 when the program exit
-
-# Note:
-# Since the 4G/3G network offers limited and unstable bandwidth, so the video streaming is limited to the lowest level for monitoring.
+# Since the 4G/3G network offers limited bandwidth, so the video streaming is limited to the lowest level for FPV.
+# Video: 360w x 202h on 15 FPS 
 # Max bandwidth: 180kB/sec (1440000 bits / 8000)
-# Play on iPhone 11 full screen 1792 x 828px, 
+# Play on iPhone 11 screen size 1792 x 828px, 
 # Resize video to 448 x 207 aspect ratio 2.16425
-
-# Todo:
-# Capture and save the HD video, then resize it for video streaming
 
 NOW=$(date +"%Y%m%d-%H%M")
 TMP_VIDEO=${PWD}/videos/$NOW.h264
