@@ -5,7 +5,8 @@ After=network-online.target zerotier-one.service
 
 [Service]
 ExecStart=/home/pi/raspicam/raspicam.sh
+Restart=on-failure
+RestartSec=5
 
 [Install]
 WantedBy=default.target
-cat /boot/config.txt
