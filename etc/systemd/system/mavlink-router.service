@@ -4,8 +4,8 @@ Wants=zerotier-one.service
 After=network-online.target zerotier-one.service
 
 [Service]
-Type=forking
-PIDFile=/var/run/mavlink-routerd.pid
+Type=simple
+# PIDFile=/var/run/mavlink-routerd.pid
 ExecStart=/home/pi/mavlink-router-service/mavlink-router.sh
 Restart=on-failure
 RestartSec=3
