@@ -1,11 +1,17 @@
 #!/bin/bash
 
+# Testing: gstreamer resize
+
 NOW=$(date +"%Y%m%d-%H%M")
-TMP_VIDEO=${PWD}/videos/$NOW.h264
-OUT_VIDEO=${PWD}/videos/$NOW.mp4
-UDP_IP=192.168.192.104 # The iPhone
+PATH=/home/pi/raspicam/videos
+TMP_VIDEO=$PATH/$NOW.h264
+OUT_VIDEO=$PATH/$NOW.mp4
+UDP_IP=192.168.192.101 # The MacbookPro
 UDP_PORT=5600
 
-raspivid -o - -t 0 -w 1280 -h 720 -fps 25 -b 4000000 -g 50 | \
-ffmpeg -re -ar 44100 -ac 2 -acodec pcm_s16le -f s16le -ac 2 -i /dev/zero -f h264 \
--i - -vcodec copy -acodec aac -ab 128k -g 50 -strict experimental -f flv rtmp://a.rtmp.youtube.com/live2/<key goes here>
+/usr/bin/raspivid -w 320 -h 180 --rotation 180 --bitrate 800000 -fps 15 \
+    --vstab --nopreview --timeout 0 --output - | \
+/usr/bin/gst-launch-1.0 -v fdsrc ! \
+    videoscale ! video/x-raw,width=160,height=90 ! \
+    x264enc ! h264parse ! rtph264pay ! \
+    udpsink host=$UDP_IP port=$UDP_PORT

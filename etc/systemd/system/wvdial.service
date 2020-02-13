@@ -1,0 +1,7 @@
+[Unit]
+Description=wvdial
+
+[Service]
+ExecStart=/usr/bin/wvdial
+Restart=on-failure
+RestartSec=5

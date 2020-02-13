@@ -6,3 +6,4 @@
 _resources/*
 **/config.py
 **/config.pyc
+etc/wpa_supplicant/wpa_supplicant.conf
