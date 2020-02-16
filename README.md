@@ -1,4 +1,4 @@
-# pxpi drone project
+# Toritaka drone project
 Pixhawk + Raspberry Pi + 4G network drone development\
 It is the source code of the Raspberry Pi files.
 
@@ -18,13 +18,15 @@ It is the source code of the Raspberry Pi files.
 - Raspberry Pi camera send video streaming to ground station;
 - The pilot can use radio control to switch on/off the video streaming;
 
-## Source Files
-| files                                    | descriptions                                  |
-| ---------------------------------------- | --------------------------------------------- |
-| glympse/glympse.py                       | Send drone's GPS position to Glympse          |
-| mavlink-router-service/mavlink-router.sh | Routing mavlink from FC to GCS                |
-| raspicam/raspicam.sh                     | Start raspicam and streaming the video to GCS |
-| rc/rc.py                                 | Use RC to switch video streaming on/off       |
+## Source Files in /home/pi/
+| files in                                 | descriptions                                    |
+| ---------------------------------------- | ----------------------------------------------- |
+| glympse/glympse.py                       | Send drone's GPS position to Glympse            |
+| mavlink-router-service/mavlink-router.sh | Routing mavlink from FC to GCS                  |
+| raspicam/raspicam.sh                     | Start raspicam and streaming the video to GCS   |
+| rc/rc.py                                 | Use RC to switch video streaming on/off         |
+| jpeg-stream/sender.py                    | Sending low bandwidth, low latency video stream |
+| jpeg-stream/receiver.py                  | Receiving and playback the stream video         |
 
 ## Notes
-For more information of the project, please read [here](https://github.com/rc-bellergy/drone-notes/tree/master/ardupilot/pxpi-plane)
+For more information of the project, please read [here](https://github.com/rc-bellergy/drone-notes/tree/master/ardupilot/toritaka)

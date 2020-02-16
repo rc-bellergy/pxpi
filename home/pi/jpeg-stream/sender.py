@@ -34,7 +34,7 @@ camera.resolution = VIDEO_SIZE
 # Start highres. video recording
 camera.start_recording('highres.h264')
 
-
+# Camera capture
 rawCapture = PiRGBArray(camera, size=STREAM_SIZE)
 
 # allow the camera to warmup
