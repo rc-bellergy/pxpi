@@ -1,6 +1,28 @@
 # JPEG Stream
+It provides a low bandwidth, low latency video stream service.
 
+## The Purpose
+For long-range FPV flight, it doesn't care about the image quality. It provides just enough information to let the pilot knows how to control the plane. However, it has to provide low latency video and use low bandwidth.
 
-## References:
-https://github.com/rc-bellergy/TinyStream
-https://stackoverflow.com/questions/36490103/opencv-mpeg-video-streaming
+## Low bandwidth
+The streaming video uses around 100 Kb - 150 Kb per sec. It can keep the stream in limited bandwidth network. (e.g. a weak signal 4G network)
+
+## Low latency
+In actual tests on a weak signal a 4G network, the streaming video latency can be as low as 48ms.
+![](references/video-latency.png)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/BpVMlIxjAsc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+## Low CPU load
+In actual tests on a Raspberry PI 3, the sender.py script used around 20% CPU load.
+
+---
+## Hardware Requirements
+### Sender
+- Raspberry PI
+- Raspberry Pi Camera Module\
+(Tested: Raspberry PI 3 and Raspberry Pi Camera v1.3)
+
+### Receiver
+- Any machine that can run Python 2 or 3\
+(Tested: MacbookPro with Python 3)

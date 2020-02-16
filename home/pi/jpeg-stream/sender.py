@@ -6,7 +6,6 @@ import numpy
 import curses
 import os
 
-
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 
@@ -15,7 +14,7 @@ TCP_PORT = 5800
 VIDEO_SIZE = (1024, 768) # video size for save
 STREAM_SIZE = (341, 256) # video size for streaming
 
-jpegQuality = 10 # 0-100
+jpegQuality = 10 # Start from very low quality (0-100)
 
 print("Connecting to socket %s:%d" % (TCP_IP, TCP_PORT))
 sock = socket.socket()
@@ -94,7 +93,8 @@ def streamLoop(win):
 			# No input   
 			pass
 
-		time.sleep(0.1) # reduce the framerate lower then 10
+		# It reduces the framerate to lower then 10FPS
+		time.sleep(0.1) 
 
 # Start the stream
 curses.wrapper(streamLoop)
