@@ -14,7 +14,9 @@ TCP_PORT = 5800
 VIDEO_SIZE = (1024, 768) # video size for save
 STREAM_SIZE = (341, 256) # video size for streaming
 
-jpegQuality = 10 # Start from very low quality (0-100)
+# Start from very low quality to make the JPEG as small as possible 
+# The range is 0-100. If you want better quality, you can adjust it.
+jpegQuality = 10 
 
 print("Connecting to socket %s:%d" % (TCP_IP, TCP_PORT))
 sock = socket.socket()
