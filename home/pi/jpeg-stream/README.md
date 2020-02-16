@@ -2,10 +2,10 @@
 It provides a low bandwidth, low latency video stream service.
 
 ## The Purpose
-For long-range FPV flight, it doesn't care about the image quality. It provides just enough information to let the pilot knows how to control the plane. However, it has to provide low latency video and use low bandwidth.
+For long-range FPV flight, it doesn't care about the image quality. It provides just enough information to let the pilot knows how to control the plane. The most important thing is that it can provide low latency video and use low bandwidth.
 
 ## Low bandwidth
-The streaming video uses around 100 Kb - 150 Kb per sec. It can keep the stream in limited bandwidth network. (e.g. a weak signal 4G network)
+The streaming video uses around 100 Kb - 150 Kb per sec. It can stream real-time video in a low bandwidth network. (e.g. a weak signal 4G network)
 
 ## Low latency
 In actual tests on a weak signal a 4G network, the streaming video latency can be as low as 48ms.
@@ -14,7 +14,7 @@ In actual tests on a weak signal a 4G network, the streaming video latency can b
 [Demo video](https://www.youtube.com/embed/BpVMlIxjAsc)
 
 ## Low CPU load
-In actual tests on a Raspberry PI 3, the sender.py script used around 20% CPU load.
+In actual tests on a Raspberry PI 3, the sender.py script used under 20% CPU load.
 
 ---
 ## Hardware Requirements
