@@ -11,7 +11,7 @@ The streaming video uses around 100 Kb - 150 Kb per sec. It can keep the stream 
 In actual tests on a weak signal a 4G network, the streaming video latency can be as low as 48ms.
 ![](references/video-latency.png)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/BpVMlIxjAsc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[Demo video](https://www.youtube.com/embed/BpVMlIxjAsc)
 
 ## Low CPU load
 In actual tests on a Raspberry PI 3, the sender.py script used around 20% CPU load.
