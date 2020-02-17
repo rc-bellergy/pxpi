@@ -32,3 +32,6 @@ In actual tests on a Raspberry PI 3, the sender.py script used under 20% CPU loa
 2. Start the sender.py on Raspberry PI
 3. Start the receiver.py on your PC/Mac
   
+## Credit
+The original code was created by `Maxcr1`:
+https://github.com/Maxcr1/TinyStream
