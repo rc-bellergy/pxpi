@@ -5,7 +5,7 @@ It provides a low bandwidth, low latency video stream service.
 For long-range FPV flight, it doesn't care about the image quality. It provides just enough information to let the pilot knows how to control the plane. The most important thing is that it can provide low latency video and use low bandwidth.
 
 ## Low bandwidth
-The streaming video uses around 100 Kb - 150 Kb per sec. It can stream real-time video in a low bandwidth network. (e.g. a weak signal 4G network)
+Test streaming video is transmitted at 10FPS at 341 x 256 frames, using a bandwidth of approximately 100 Kb-150 Kb per second. It can stream real-time video in a low bandwidth network. (e.g. a weak signal 4G network)
 
 ## Low latency
 In actual tests on a weak signal a 4G network, the streaming video latency can be as low as 48ms.
