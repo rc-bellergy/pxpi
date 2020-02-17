@@ -16,6 +16,9 @@ In actual tests on a weak signal a 4G network, the streaming video latency can b
 ## Low CPU load
 In actual tests on a Raspberry PI 3, the sender.py script used under 20% CPU load.
 
+## Save high-res. video at same time
+It streams the low-resolution video and saves a high-resolution video to file.
+
 ---
 ## Hardware Requirements
 ### Sender
