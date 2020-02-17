@@ -26,3 +26,9 @@ In actual tests on a Raspberry PI 3, the sender.py script used under 20% CPU loa
 ### Receiver
 - Any machine that can run Python 2 or 3\
 (Tested: MacbookPro with Python 3)
+
+## How to strat?
+1. Change the TCP_IP setting in the sender.py. Set it to the receiver IP.
+2. Start the sender.py on Raspberry PI
+3. Start the receiver.py on your PC/Mac
+  
