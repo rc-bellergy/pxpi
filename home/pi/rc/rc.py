@@ -30,26 +30,24 @@ mav.wait_heartbeat()
 logging.info("Heartbeat received!")
 
 # Listen channels
-logging.info("Monitoring the mavlink 'RC_CHANNELS_RAW.chan5_raw'")
 
 while True:
 
-    # Watch the channel 5, if the switch position on middle, start the video streaming, else stop it.
-
+    # Watch the channel 6, if the switch position on middle, start the video streaming, else stop it.
     channels = mav.recv_match(type='RC_CHANNELS', blocking=True)
-    ch = channels.chan5_raw
+    ch = channels.chan6_raw
+    # logging.info(ch)
     if video_streaming is not True:
-        if ch > 1200 and ch < 1800:
+        if ch > 1400 and ch < 1800:
             os.system('sudo systemctl start raspicam')
             logging.info("Video streaming started")
             video_streaming = True
             # TODO: Send status to mavlink
     else:
-        if ch <= 1200 or ch >= 1800:
+        if ch > 1800:
             os.system('sudo systemctl stop raspicam')
             logging.info("Video streaming stopped")
             video_streaming = False
             # TODO: Send status to mavlink
-    time.sleep(0.5)
 
 quit()

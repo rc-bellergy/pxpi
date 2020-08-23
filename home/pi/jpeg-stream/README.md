@@ -17,7 +17,11 @@ In actual tests on a weak signal a 4G network, the streaming video latency can b
 In actual tests on a Raspberry PI 3, the sender.py script used under 20% CPU load.
 
 ## Save high-res. video at same time
-It streams the low-resolution video and saves a high-resolution video to file.
+It streams the low-resolution video and saves a high-resolution video to file.\
+Use this script to convert .h264 to mp4
+
+    /usr/bin/MP4Box -add test.h264 test.mp4
+    rm test.h264
 
 ---
 ## Hardware Requirements
@@ -34,7 +38,7 @@ It streams the low-resolution video and saves a high-resolution video to file.
 1. Change the TCP_IP setting in the sender.py. Set it to the receiver IP.
 2. Start the sender.py on Raspberry PI
 3. Start the receiver.py on your PC/Mac
-  
+
 ## Credit
 The original code was created by `Maxcr1`:
 https://github.com/Maxcr1/TinyStream

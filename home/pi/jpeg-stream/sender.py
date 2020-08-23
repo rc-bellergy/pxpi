@@ -1,17 +1,16 @@
 import time
-import sys
 import socket
 import cv2
 import numpy
-import curses
 import os
+import curses
 
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 
 TCP_IP = "192.168.192.101"
 TCP_PORT = 5800
-VIDEO_SIZE = (1024, 768) # video size for save
+VIDEO_SIZE = "1024x768" # video size for save
 STREAM_SIZE = (341, 256) # video size for streaming
 
 # Start from very low quality to make the JPEG as small as possible 

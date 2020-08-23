@@ -56,6 +56,7 @@ def loop():
             # Grab image data based on the length data previously recieved
             if length is not None:
                 stringData = recvall(conn, int(length))
+                # print(stringData)
             else:
                 print("No streaming data.")
                 cv2.destroyAllWindows()
