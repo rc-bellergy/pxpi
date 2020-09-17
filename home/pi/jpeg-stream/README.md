@@ -20,7 +20,7 @@ In actual tests on a Raspberry PI 3, the sender.py script used under 20% CPU loa
 It streams the low-resolution video and saves a high-resolution video to file.\
 Use this script to convert .h264 to mp4
 
-    /usr/bin/MP4Box -add test.h264 test.mp4
+    /usr/bin/MP4Box -add test.h264 test.mp4 -flat
     rm test.h264
 
 ---

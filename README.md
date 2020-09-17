@@ -19,14 +19,21 @@ It is the source code of the Raspberry Pi files.
 - The pilot can use radio control to switch on/off the video streaming;
 
 ## Source Files in /home/pi/
-| files in                                 | descriptions                                    |
-| ---------------------------------------- | ----------------------------------------------- |
-| glympse/glympse.py                       | Send drone's GPS position to Glympse            |
-| mavlink-router-service/mavlink-router.sh | Routing mavlink from FC to GCS                  |
-| raspicam/raspicam.sh                     | Start raspicam and streaming the video to GCS   |
-| rc/rc.py                                 | Use RC to switch video streaming on/off         |
-| jpeg-stream/sender.py                    | Sending low bandwidth, low latency video stream |
-| jpeg-stream/receiver.py                  | Receiving and playback the stream video         |
+| files in                                 | descriptions                                               |
+| ---------------------------------------- | ---------------------------------------------------------- |
+| glympse/glympse.py                       | Send drone's GPS position to Glympse                       |
+| mavlink-router-service/mavlink-router.sh | Routing mavlink from FC to GCS                             |
+| raspicam/raspicam.sh                     | (NOT IN USE) Start raspicam and streaming the video to GCS |
+| rc/rc.py                                 | Use RC to switch video streaming on/off                    |
+| jpeg-stream/sender.py                    | Sending low bandwidth, low latency video stream            |
+| jpeg-stream/receiver.py                  | Receiving and playback the stream video                    |
+
+## systemd enabled services
+- mavlink-router.service
+- wvdial.service
+
+## Restart mavlink-router
+sudo systemctl restart mavlink-router.service
 
 ## Notes
 For more information of the project, please read [here](https://github.com/rc-bellergy/drone-notes/tree/master/ardupilot/toritaka)
