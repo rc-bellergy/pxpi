@@ -6,7 +6,20 @@ from picamera import PiCamera
 from picamera.array import PiRGBArray
 from cv2 import IMWRITE_JPEG_QUALITY, imencode
 
+'''
+Capture Raspberry Pi camera,
+- send low-res video streaming to ground station
+- save high-res .h264 video to disk
+'''
+
 class Sender:
+
+    '''
+    :param str ip: the IP of the groundstation
+    :param int port: the receiving port of the groundstation
+    :param int stream_quality: the JPEG compression rate (0-100)
+    :param tuple stream_quality: the size of streaming video (width, height)
+    '''
 
     def __init__(self, ip="192.168.192.101", port=5800, stream_quality=20, stream_size=(352, 256)):
 
@@ -54,13 +67,18 @@ class Sender:
             self.streaming = True
             if self.stoppingStreamThread == False:
                 print("Video stream started")
-                t = threading.Thread(target=self.streamThread)
+                t = threading.Thread(target=self.__streamThread)
                 t.start()
             else:
                 print("Video stream start again.")
                 self.stoppingStreamThread = False
 
-    def streamThread(self):
+    def streamStop(self):
+        if self.streaming == True and self.stoppingStreamThread == False:
+            self.streaming = False
+            self.stoppingStreamThread = True
+
+    def __streamThread(self):
         for frame in self.camera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True, resize=self.stream_size):
             image = frame.array
             encode_param = [IMWRITE_JPEG_QUALITY, self.stream_quality]
@@ -76,7 +94,4 @@ class Sender:
                 print("Video stream stop")
                 break
 
-    def streamStop(self):
-        if self.streaming == True and self.stoppingStreamThread == False:
-            self.streaming = False
-            self.stoppingStreamThread = True
+

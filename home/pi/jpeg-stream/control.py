@@ -1,10 +1,13 @@
-
-
-
 import time
 from sender2 import Sender
 import pymavlink.mavutil as mavutil
 
+'''
+Send testing stream video to receiver, when program start
+Connect Mavlink and watch the RC channel 6
+If switch on middle, send streaming video
+If swicth on bottom, send streaming video and save high-res video to disk
+'''
 
 def testingVideo(sender):
     print("--- Testing streaming video start ---")
