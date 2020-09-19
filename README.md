@@ -3,13 +3,13 @@ Pixhawk + Raspberry Pi + 4G network drone development\
 It is the source code of the Raspberry Pi files.
 
 ## Tested on Hardwares/Components
-- Body: **Parrot Disco**
-- FC: **Pixhawk (FMU V2)**
-- Onboard computer: **Raspberry Pi 3**
-- Network: **HUAWEI E3372** (3G/4G)
+- Body: **Custom Multirotor**
+- FC: **PixRacer R15**
+- Onboard computer: **Raspberry Pi Zero**
+- Network: **HUAWEI E3372** / **HUAWEI E3370** (3G/4G)
 
 ## Support Firmware
-- Firmware: **ArduPlane 3.0**
+- Firmware: **PX4**
 
 ## Features
 - Connect Pixhawk and Raspberry Pi using `mavlink-router` and `pymavlink`
