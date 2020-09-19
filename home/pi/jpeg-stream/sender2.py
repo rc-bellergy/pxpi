@@ -2,7 +2,7 @@ import datetime, time
 import threading
 import socket
 import numpy
-from picamera import PiCamera
+from picamera import PiCamera, Color
 from picamera.array import PiRGBArray
 from cv2 import IMWRITE_JPEG_QUALITY, imencode
 
@@ -29,7 +29,7 @@ class Sender:
         self.stream_size = stream_size
         self.streaming = False
         self.recording = False
-        self.stoppingStreamThread = False
+        self.stoppingStreamThread = False # requested streamStop(), but waitting __streamThread() stop the thread
 
         self.sock = socket.socket()
         print("Connecting to socket %s:%d" % (self.ip, self.port))
@@ -43,8 +43,9 @@ class Sender:
         self.camera = PiCamera()
         self.camera.resolution = "1024x768"
         self.camera.rotation = 180
-        self.camera.annotate_text_size = 50
+        self.camera.annotate_text_size = 40
         self.camera.annotate_frame_num = True
+        self.camera.annotate_background = Color('black')
         self.rawCapture = PiRGBArray(self.camera, size=self.stream_size)
 
     def recordingStart(self):

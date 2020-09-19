@@ -37,5 +37,8 @@ sudo systemctl restart mavlink-router.service
 ## Check mavlink-router service log
 sudo journalctl -u mavlink-router
 
+## Convert h264 to mp4
+/usr/bin/MP4Box -add test.h264 test.mp4 -flat
+
 ## Notes
 For more information of the project, please read [here](https://github.com/rc-bellergy/drone-notes/tree/master/ardupilot/toritaka)
