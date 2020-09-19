@@ -1,4 +1,4 @@
-# Radio control listener
+# (NOT IN USE) Radio control listener
 
 ## Start
 It will auto start when system boot.\
@@ -10,4 +10,4 @@ Manual start:
     sudo systemctl restart radio-control.service
 
 ## Stop
-    sudo systemctl stop radio-control.service
+    sudo systemctl stop radiqo-control.service

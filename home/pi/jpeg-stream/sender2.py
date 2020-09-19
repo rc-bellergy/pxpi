@@ -1,4 +1,5 @@
 import datetime, time
+import threading
 import socket
 import numpy
 from picamera import PiCamera
@@ -15,6 +16,7 @@ class Sender:
         self.stream_size = stream_size
         self.streaming = False
         self.recording = False
+        self.stoppingStreamThread = False
 
         self.sock = socket.socket()
         print("Connecting to socket %s:%d" % (self.ip, self.port))
@@ -49,22 +51,32 @@ class Sender:
 
     def streamStart(self):
         if self.streaming == False:
-            print("Video stream started")
             self.streaming = True
-            self.streaming = True
-            for frame in self.camera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True, resize=self.stream_size):
-                image = frame.array
-                encode_param = [IMWRITE_JPEG_QUALITY, self.stream_quality]
-                result, imgencode = imencode('.jpg', image, encode_param)
-                data = numpy.array(imgencode)
-                stringData = data.tostring()
-                self.sock.send(str(len(stringData)).ljust(16).encode())
-                self.sock.send(stringData)
-                self.rawCapture.truncate(0)
-                time.sleep(0.1)
-                if self.streaming == False:
-                    print("Video stream stop")
-                    break
+            if self.stoppingStreamThread == False:
+                print("Video stream started")
+                t = threading.Thread(target=self.streamThread)
+                t.start()
+            else:
+                print("Video stream start again.")
+                self.stoppingStreamThread = False
+
+    def streamThread(self):
+        for frame in self.camera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True, resize=self.stream_size):
+            image = frame.array
+            encode_param = [IMWRITE_JPEG_QUALITY, self.stream_quality]
+            result, imgencode = imencode('.jpg', image, encode_param)
+            data = numpy.array(imgencode)
+            stringData = data.tostring()
+            self.sock.send(str(len(stringData)).ljust(16).encode())
+            self.sock.send(stringData)
+            self.rawCapture.truncate(0)
+            time.sleep(0.1)
+            if self.streaming == False:
+                self.stoppingStreamThread = False
+                print("Video stream stop")
+                break
 
     def streamStop(self):
-        self.streaming = False
+        if self.streaming == True and self.stoppingStreamThread == False:
+            self.streaming = False
+            self.stoppingStreamThread = True

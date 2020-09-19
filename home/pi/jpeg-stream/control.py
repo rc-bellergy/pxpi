@@ -2,31 +2,15 @@
 
 
 import time
-import threading
 from sender2 import Sender
 import pymavlink.mavutil as mavutil
 
-def testingVideo(length=10):
+
+def testingVideo(sender):
     print("--- Testing streaming video start ---")
-    sender = Sender()
-    time.sleep(0.1) # Wait camera init
-
-    # Strat the video stream in a thread
-    stream = threading.Thread(target=sender.streamStart)
-    stream.start()
-
-    # Strat the highres. video recording
-    sender.recordingStart()
-
-    # Let the camera runs n sec.
-    time.sleep(length)
-
-    # Stop the streaming
+    sender.streamStart()
+    time.sleep(5)
     sender.streamStop()
-
-    # Stop the recording
-    sender.recordingStop()
-    
     print("--- Testing streaming video end ---")
 
 def connectMavlink():
@@ -37,26 +21,30 @@ def connectMavlink():
     print("Mavlink heartbeat received!")
     return mav
 
-# mav = connectMavlink()
-# print("Watch RC channel 6")
-# while True:
-#     #  Watch channel 6
-#     channels = mav.recv_match(type='RC_CHANNELS', blocking=True)
-#     v = channels.chan6_raw
+def watchChannel(mav, sender):
+    print("Watch RC channel 6")
+    while True:
+        #  Watch channel 6
+        channels = mav.recv_match(type='RC_CHANNELS', blocking=True)
+        v = channels.chan6_raw
 
-#     # switch on bottom
-#     if v<1200: 
-#         sender.recordingStart()
-#         sender.streaming = True
+        # switch on bottom
+        if v<1200: 
+            sender.recordingStart()
+            sender.streamStart()
 
-#     # switch on middle
-#     if v>=1200v && v<1800: 
-#         sender.recordingStop()
-#         sender.streaming = True
+        # switch on middle
+        if v>=1200 and v<1800: 
+            sender.recordingStop()
+            sender.streamStart()
 
-#     # switch on middle
-#     if v>=1800:
-#         sender.recordingStop()
-#         sender.streaming = False
+        # switch on top
+        if v>=1800:
+            sender.recordingStop()
+            sender.streamStop()
 
-testingVideo()
+video_sender = Sender()
+time.sleep(0.1)  # Wait camera init
+testingVideo(video_sender)
+mav = connectMavlink()
+watchChannel(mav, video_sender)
