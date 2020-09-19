@@ -35,5 +35,7 @@ It is the source code of the Raspberry Pi files.
 ## Restart mavlink-router
 sudo systemctl restart mavlink-router.service
 
+sudo journalctl -u mavlink-router
+
 ## Notes
 For more information of the project, please read [here](https://github.com/rc-bellergy/drone-notes/tree/master/ardupilot/toritaka)

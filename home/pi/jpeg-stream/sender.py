@@ -40,13 +40,10 @@ rawCapture = PiRGBArray(camera, size=STREAM_SIZE)
 time.sleep(0.1)
 
 def streamLoop():
+
 	# Start from very low quality to make the JPEG as small as possible 
 	# The range is 0-100. If you want better quality, you can adjust it.
-	jpegQuality = 20 	
-
-	# new window user interface
-	# win.nodelay(True)
-	# key = ""
+	jpegQuality = 20
 
 	# capture frames from the camera
 	for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True, resize=STREAM_SIZE):
@@ -75,29 +72,6 @@ def streamLoop():
 		rawCapture.truncate(0)
 		key = cv2.waitKey(1) & 0xFF
 
-		# try:
-		# 	key = win.getkey()
-		# 	# Increase JPEG quality
-		# 	if key == ">" and jpegQuality < 100:
-		# 		jpegQuality = jpegQuality + 1
-		# 		win.clear()
-		# 		print("IMWRITE_JPEG_QUALITY: %d" % jpegQuality)
-
-		# 	# Decrease JPEG quality
-		# 	if key == "<" and jpegQuality > 0:
-		# 		jpegQuality = jpegQuality - 1
-		# 		win.clear()
-		# 		print("IMWRITE_JPEG_QUALITY: %d" % jpegQuality)
-
-		# 	# Quit 
-		# 	if key == "q":
-		# 		break
-
-		# except Exception as e:
-		# 	# No input   
-		# 	pass
-
-		# Limit framerate
 		time.sleep(0.1) 
 
 # Start the stream
