@@ -1,7 +1,6 @@
 import datetime, time
 import socket
 import numpy
-import threading
 from picamera import PiCamera
 from picamera.array import PiRGBArray
 from cv2 import IMWRITE_JPEG_QUALITY, imencode
@@ -15,6 +14,7 @@ class Sender:
         self.stream_quality = stream_quality # JPEG quality 0-100
         self.stream_size = stream_size
         self.streaming = False
+        self.recording = False
 
         self.sock = socket.socket()
         print("Connecting to socket %s:%d" % (self.ip, self.port))
@@ -33,55 +33,38 @@ class Sender:
         self.rawCapture = PiRGBArray(self.camera, size=self.stream_size)
 
     def recordingStart(self):
-
         # Start highres. video recording
-        video_file = '/data/highres-{}.h264'.format(datetime.datetime.now())
-        self.camera.start_recording(video_file)
-        print("Recording video to "+video_file)
+        if self.recording == False:
+            print("Recording Start")
+            self.recording = True
+            video_file = '/data/highres-{}.h264'.format(datetime.datetime.now())
+            self.camera.start_recording(video_file)
+            print("Recording video to "+video_file)
 
     def recordingStop(self):
-        self.camera.stop_recording()
-
+        if self.recording == True:
+            print("Recording Stop")
+            self.recording = False
+            self.camera.stop_recording()
 
     def streamStart(self):
+        if self.streaming == False:
+            print("Video stream started")
+            self.streaming = True
+            self.streaming = True
+            for frame in self.camera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True, resize=self.stream_size):
+                image = frame.array
+                encode_param = [IMWRITE_JPEG_QUALITY, self.stream_quality]
+                result, imgencode = imencode('.jpg', image, encode_param)
+                data = numpy.array(imgencode)
+                stringData = data.tostring()
+                self.sock.send(str(len(stringData)).ljust(16).encode())
+                self.sock.send(stringData)
+                self.rawCapture.truncate(0)
+                time.sleep(0.1)
+                if self.streaming == False:
+                    print("Video stream stop")
+                    break
 
-        print("Video stream started")
-        self.streaming = True
-        for frame in self.camera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True, resize=self.stream_size):
-            image = frame.array
-            encode_param = [IMWRITE_JPEG_QUALITY, self.stream_quality]
-            result, imgencode = imencode('.jpg', image, encode_param)
-            data = numpy.array(imgencode)
-            stringData = data.tostring()
-            self.sock.send(str(len(stringData)).ljust(16).encode())
-            self.sock.send(stringData)
-            self.rawCapture.truncate(0)
-            time.sleep(0.1)
-            if self.streaming == False:
-                break
-
-
-    
-
-		    
-
-sender = Sender()
-time.sleep(0.1)
-
-stream = threading.Thread(target=sender.streamStart)
-stream.start()
-
-time.sleep(2)
-sender.recordingStart()
-
-time.sleep(10)
-
-sender.streaming = False
-
-time.sleep(2)
-sender.recordingStop()
-
-# sender.streamStart()
-# sender.recordingStart()
-
-# camera.stop_recording()
+    def streamStop(self):
+        self.streaming = False

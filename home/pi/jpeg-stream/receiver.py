@@ -1,11 +1,10 @@
 import math
 import time
 import traceback
-
 import numpy
 import socket
-
 import cv2
+import os
 
 TCP_IP = "0.0.0.0"
 TCP_PORT = 5800
@@ -39,14 +38,16 @@ def attemptConnection():
     s.listen(1)
 
     # Accept first connection and set connection to be class-wide
-    print("Listening for camera on port", TCP_PORT)
+    print("Listening for video streaming on port", TCP_PORT)
     conn, addr = s.accept()
     print("Accepted connection")
 
 def loop():
-    print("Receiving stream")
+    print("Receiving stream ...")
 
     global conn
+    winName = "Streaming video at %s port" % str(TCP_PORT)
+    winSize = (550, 400)
 
     while True:
         try:
@@ -58,8 +59,9 @@ def loop():
                 stringData = recvall(conn, int(length))
                 # print(stringData)
             else:
-                print("No streaming data.")
-                cv2.destroyAllWindows()
+                print("No streaming data!!")
+                print("--- Strat over ---")
+                cv2.destroyAllWindows() # Not work!
                 break
 
             # Decode JPG base64 string into a NumPy matrix of RGB data
@@ -68,12 +70,9 @@ def loop():
             # Convert NumPy color matrix into OpenCV Matrix
             decimg = cv2.imdecode(data, 1)
 
-            # Blow image back up to size
-            newX, newY = decimg.shape[1] * 2, decimg.shape[0] * 2
-            decimg = cv2.resize(decimg, (int(newX), int(newY)))
-
-            # Show image on a window named after its port.
-            cv2.imshow("Streaming video at %s port" % str(TCP_PORT), decimg)
+            # update the image on window
+            decimg = cv2.resize(decimg, winSize)
+            cv2.imshow(winName, decimg)
 
             # Use the OpenCV famous break statement to allow imshow to function properly.
             k = cv2.waitKey(5) & 0xFF
