@@ -24,15 +24,13 @@ It is the source code of the Raspberry Pi files.
 | glympse/glympse.py                       | Send drone's GPS position to Glympse                       |
 | mavlink-router-service/mavlink-router.sh | Routing mavlink from FC to GCS                             |
 | jpeg-stream/sender2.py                   | Sending low bandwidth, low latency video stream            |
-| jpeg-stream/receiver.py                  | Receiving and playback the stream video (on groundstation) |
+| jpeg-stream/receiver2.py                 | Receiving and playback the stream video (on groundstation) |
 | jpeg-stream/control.py                   | Use remote control to start, stop, recording video         |
 
-## systemd enabled services
-- mavlink-router.service
-- wvdial.service
-
-## Restart mavlink-router
-sudo systemctl restart mavlink-router.service
+## The enabled system services, in case you need to restart it
+sudo systemctl restart mavlink-router
+sudo systemctl restart jpeg-sender
+sudo systemctl restart wvdial
 
 ## Check mavlink-router service log
 sudo journalctl -u mavlink-router

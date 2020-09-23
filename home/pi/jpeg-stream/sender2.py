@@ -43,9 +43,6 @@ class Sender:
         self.camera = PiCamera()
         self.camera.resolution = "1024x768"
         self.camera.rotation = 180
-        self.camera.annotate_text_size = 40
-        self.camera.annotate_frame_num = True
-        self.camera.annotate_background = Color('black')
         self.rawCapture = PiRGBArray(self.camera, size=self.stream_size)
 
     def recordingStart(self):
@@ -85,7 +82,7 @@ class Sender:
             encode_param = [IMWRITE_JPEG_QUALITY, self.stream_quality]
             result, imgencode = imencode('.jpg', image, encode_param)
             data = numpy.array(imgencode)
-            stringData = data.tostring()
+            stringData = data.tostring() + str(time.time()).ljust(13) # add timestamp
             self.sock.send(str(len(stringData)).ljust(16).encode())
             self.sock.send(stringData)
             self.rawCapture.truncate(0)
