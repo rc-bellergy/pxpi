@@ -46,8 +46,39 @@ def watchChannel(mav, sender):
             sender.recordingStop()
             sender.streamStop()
 
+
+
 video_sender = Sender()
 time.sleep(0.1)  # Wait camera init
 testingVideo(video_sender)
-mav = connectMavlink()
-watchChannel(mav, video_sender)
+# mav = connectMavlink()
+# watchChannel(mav, video_sender)
+
+streaming = False
+recording = False
+
+while True:
+    print("")
+    c = raw_input("Input (s)tream (r)ecord (q)uit: ")
+    if c=="s":
+        if streaming:
+            video_sender.streamStop()
+            streaming = False
+        else:
+            video_sender.streamStart()
+            streaming = True
+    if c=="r":
+        if recording:
+            video_sender.recordingStop()
+            recording = False
+        else:
+            video_sender.recordingStart()
+            recording = True
+            
+    if c=="q":
+        break
+
+    time.sleep(0.1)
+
+video_sender.recordingStop()
+video_sender.streamStop()

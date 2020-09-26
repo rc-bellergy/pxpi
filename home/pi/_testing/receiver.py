@@ -1,37 +1,46 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
-# Testing receive mavlink message
-# The mavlink-router setting is
-# mavlink-routerd -e 127.0.0.1:14550 0.0.0.0:5760
-
-from __future__ import print_function
-
+import asyncio
 import pymavlink.mavutil as mavutil
-import sys
-import time
+import time, os
+from mavsdk import System
 
-# if len(sys.argv) != 3:
-#     print("Usage: %s <ip:udp_port> <system-id>" % (sys.argv[0]))
-#     print("Receive mavlink heartbeats on specified interface. "
-#           "Respond with a ping message")
-#     quit()
 
-UDP = "192.168.192.103:14550"
-SYSTEM_ID = 50
 
-srcSystem = SYSTEM_ID
-mav = mavutil.mavlink_connection(
-    'udpin:' + UDP, source_system=srcSystem)
+def connectMavlink():
+    # Connect to mavlink
+    link = "udpin:127.0.0.1:14551"
+    print("Connecting Mavlink:", link)
+    mav = mavutil.mavlink_connection(link)
+    mav.wait_heartbeat()
+    print("Mavlink heartbeat received!")
+    return mav
 
-while (True):
-    msg = mav.recv_match(type='PING', blocking=True)
-    print("Message from %d: %s" % (msg.get_srcSystem(), msg))
-    if msg.target_system == 0:
-        print("\tMessage sent to all")
-    elif msg.target_system == srcSystem:
-        print("\tMessage sent to me")
-    else:
-        print("\tMessage sent to other")
-    mav.mav.ping_send(
-        int(time.time() * 1000), msg.seq,
-        msg.get_srcSystem(), msg.get_srcComponent())
+async def run():
+
+    gcsIP = "192.168.192.101"
+
+    drone = System()
+    await drone.connect(system_address="udp://:14540")
+
+    print("Waiting for drone to connect...")
+    async for state in drone.core.connection_state():
+        if state.is_connected:
+            print(f"Drone discovered with UUID: {state.uuid}")
+            break
+
+    async for flight_mode in drone.telemetry.flight_mode():
+        print("FlightMode:", flight_mode)
+
+if __name__ == "__main__":
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(run())
+
+# while (True):
+#     response = os.system("ping -c 1 192.168.192.101 >/dev/null 2>&1")
+#     if response == 0:
+#         print('Datalink is up!')
+#     else:
+#         print('Datalink is down!')
+#     time.sleep(5)
+

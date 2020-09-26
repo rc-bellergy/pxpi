@@ -76,6 +76,8 @@ class Sender:
             self.streaming = False
             self.stoppingStreamThread = True
 
+    # encode the capture image + timestamp
+    # send it by socket
     def __streamThread(self):
         for frame in self.camera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True, resize=self.stream_size):
             image = frame.array

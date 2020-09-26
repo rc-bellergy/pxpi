@@ -50,7 +50,10 @@ def main():
     while True:
         try:
             
-            # decode the image
+            # receive data from socket
+            # the last 13 digit is timestamp
+            # use the timestamp to calculate the latency of the video
+            # encode remaining data to image
             length = recvall(conn, 16)
             if length is not None:
                 stringData = recvall(conn, int(length))
@@ -61,6 +64,7 @@ def main():
             else:
                 print("No streaming data!!")
                 print("--- Strat over ---")
+                cv2.waitKey(10)
                 cv2.destroyAllWindows() # Not work on Mac!
                 break
             
