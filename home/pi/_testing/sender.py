@@ -10,7 +10,7 @@ import pymavlink.mavutil as mavutil
 import sys
 import time
 
-UDP = "192.168.192.103:14550" # The IP and port of QGroundcontrol. It can't be a broadcast IP.
+UDP = "192.168.192.101:14550" # The IP and port of QGroundcontrol. It can't be a broadcast IP.
 SOURCE_SYSTEM_ID = 99 # Me, the sender
 TARGET_SYSTEM_ID = 255 # QGroundcontrol
 

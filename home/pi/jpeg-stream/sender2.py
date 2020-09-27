@@ -45,6 +45,27 @@ class Sender:
         self.camera.rotation = 180
         self.rawCapture = PiRGBArray(self.camera, size=self.stream_size)
 
+    def changeQuality(self, qty):
+        if qty > 100:
+            qty = 100
+        if qty < 0:
+            qty = 0
+        self.stream_quality = qty
+        print("Video quality: %i" % qty)
+
+    def changeResolution(self, res):
+        if res == "HD":
+            self.stream_size = (704, 512)
+            self.rawCapture = PiRGBArray(self.camera, size=self.stream_size)
+            self.streamRestart()
+            print("Change to HD")
+
+        if res == "SD":
+            self.stream_size = (352, 256)
+            self.rawCapture = PiRGBArray(self.camera, size=self.stream_size)
+            self.streamRestart()
+            print("Change to SD")
+
     def recordingStart(self):
         # Start highres. video recording
         if self.recording == False:
@@ -76,6 +97,12 @@ class Sender:
             self.streaming = False
             self.stoppingStreamThread = True
 
+    def streamRestart(self):
+        self.streamStop()
+        while self.stoppingStreamThread == True:
+            pass
+        self.streamStart()
+
     # encode the capture image + timestamp
     # send it by socket
     def __streamThread(self):
@@ -84,11 +111,23 @@ class Sender:
             encode_param = [IMWRITE_JPEG_QUALITY, self.stream_quality]
             result, imgencode = imencode('.jpg', image, encode_param)
             data = numpy.array(imgencode)
-            stringData = data.tostring() + str(time.time()).ljust(13) # add timestamp
+
+            # Add timestamp
+            stringData = data.tostring() + str(time.time()).ljust(13) 
+
+            # Send the size of the data for efficient unpacking
             self.sock.send(str(len(stringData)).ljust(16).encode())
+
+            # Send the data
             self.sock.send(stringData)
+
+            # Clear the stream in preparation for the next frame
             self.rawCapture.truncate(0)
+
+            # Limit the framerate
             time.sleep(0.1)
+
+
             if self.streaming == False:
                 self.stoppingStreamThread = False
                 print("Video stream stop")

@@ -1,8 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
-import time, os, asyncio
+import time, os
 from sender2 import Sender
-from mavsdk import System
 
 def testingVideo(sender):
     print("--- Testing streaming video start ---")
@@ -17,52 +16,54 @@ time.sleep(0.1)  # Wait camera init
 
 streaming = False
 recording = False
-flight_mode = "No data"
 
-async def run():
+while True:
+    print("")
+    c = raw_input("Input (s)tream (r)ecord (q)uit: ")
 
-    drone = System()
-    await drone.connect(system_address="udp://:14540")
+    # Change video quality (0-9)
+    try:
+        c = int(c)
+        if c>=0 and c<=9:
+            qty = c * 10
+            video_sender.changeQuality(qty)
+    except ValueError:
+        pass
 
-    print("Waiting for drone to connect...")
+    # Start / Stop video streaming
+    if c=="s":
+        if streaming:
+            video_sender.streamStop()
+            streaming = False
+        else:
+            video_sender.streamStart()
+            streaming = True
 
-    async for state in drone.core.connection_state():
-        if state.is_connected:
-            print(f"Drone discovered with UUID: {state.uuid}")
-            break
+    # Start / Stop video recording
+    if c=="r":
+        if recording:
+            video_sender.recordingStop()
+            recording = False
+        else:
+            video_sender.recordingStart()
+            recording = True
 
-    async for fm in drone.telemetry.flight_mode():
-        if flight_mode != fm:
-            flight_mode = fm
-            print("FlightMode:", flight_mode)
+    # Change to high-resolution video
+    if c=="h":
+        video_sender.changeResolution("HD")
+    
+    # Change to low-resolution video 
+    if c=="s":
+        video_sender.changeResolution("SD")
+            
+    # Quit
+    if c=="q":
+        break
 
-    while True:
-        print("")
-        c = raw_input("Input (s)tream (r)ecord (q)uit: ")
-        if c=="s":
-            if streaming:
-                video_sender.streamStop()
-                streaming = False
-            else:
-                video_sender.streamStart()
-                streaming = True
-        if c=="r":
-            if recording:
-                video_sender.recordingStop()
-                recording = False
-            else:
-                video_sender.recordingStart()
-                recording = True
-                
-        if c=="q":
-            break
-
-        time.sleep(0.1)
+    time.sleep(0.1)
 
 # stop all before quit
 video_sender.recordingStop()
 video_sender.streamStop()
 
-if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(run())
+
