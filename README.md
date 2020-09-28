@@ -1,4 +1,4 @@
-# Toritaka drone project
+# Datalink (4G) drone project
 Pixhawk + Raspberry Pi + 4G network drone development\
 It is the source code of the Raspberry Pi files.
 
