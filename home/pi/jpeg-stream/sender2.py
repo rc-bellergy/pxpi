@@ -1,3 +1,5 @@
+# A JPEG stream sender (Echo client)
+
 import datetime, time
 import threading
 import socket
@@ -30,6 +32,7 @@ class Sender:
         self.streaming = False
         self.recording = False
         self.stoppingStreamThread = False # requested streamStop(), but waitting __streamThread() stop the thread
+        self.t1 = time.time()
 
         self.sock = socket.socket()
         print("Connecting to socket %s:%d" % (self.ip, self.port))
@@ -58,13 +61,13 @@ class Sender:
             self.stream_size = (704, 512)
             self.rawCapture = PiRGBArray(self.camera, size=self.stream_size)
             self.streamRestart()
-            print("Change to HD")
+            print("Change to High Res.")
 
         if res == "SD":
             self.stream_size = (352, 256)
             self.rawCapture = PiRGBArray(self.camera, size=self.stream_size)
             self.streamRestart()
-            print("Change to SD")
+            print("Change to Low Res.")
 
     def recordingStart(self):
         # Start highres. video recording
@@ -116,21 +119,26 @@ class Sender:
             stringData = data.tostring() + str(time.time()).ljust(13) 
 
             # Send the size of the data for efficient unpacking
-            self.sock.send(str(len(stringData)).ljust(16).encode())
+            self.sock.sendall(str(len(stringData)).ljust(16).encode())
 
             # Send the data
-            self.sock.send(stringData)
+            self.sock.sendall(stringData)
+
+            ## Limit 10 FPS to save bandwidth
+            while time.time() - self.t1 <= 0.1:
+                pass
+            self.t1 = time.time()
 
             # Clear the stream in preparation for the next frame
             self.rawCapture.truncate(0)
 
-            # Limit the framerate
-            time.sleep(0.1)
-
-
+            # Check if request to stop the stream thread
             if self.streaming == False:
                 self.stoppingStreamThread = False
                 print("Video stream stop")
                 break
+            
 
-
+# Testing
+# s=Sender()
+# s.streamStart()

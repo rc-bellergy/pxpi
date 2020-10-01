@@ -53,7 +53,7 @@ while True:
         video_sender.changeResolution("HD")
     
     # Change to low-resolution video 
-    if c=="s":
+    if c=="l":
         video_sender.changeResolution("SD")
             
     # Quit

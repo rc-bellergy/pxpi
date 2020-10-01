@@ -1,3 +1,8 @@
+# A JPEG stream receiver (Echo server)
+# It waits socket connection on port 5800
+# It will decode the data and show it on CV image viewer
+# If connection closed, it will restart 
+
 import math
 import time
 import traceback
@@ -6,7 +11,7 @@ import socket
 import cv2
 import os
 
-TCP_IP = "0.0.0.0"
+TCP_IP = "0.0.0.0" # Any IP can connect me
 TCP_PORT = 5800
 
 conn = None
@@ -30,7 +35,7 @@ def attemptConnection():
     s.listen(1)
     print("Listening for video streaming on port", TCP_PORT)
     conn, addr = s.accept()
-    print("Accepted connection")
+    print("Connected by", addr)
 
 def main():
     print("Waitting video stream ...")
@@ -47,6 +52,8 @@ def main():
 
     lastFrame = time.time()
 
+    adjustTime = 0
+
     while True:
         try:
             
@@ -54,11 +61,16 @@ def main():
             # the last 13 digit is timestamp
             # use the timestamp to calculate the latency of the video
             # encode remaining data to image
+
             length = recvall(conn, 16)
             if length is not None:
                 stringData = recvall(conn, int(length))
                 timestamp = float(stringData[-13:])
-                latency = "latency: %s sec." % "{:.2f}".format(time.time() - timestamp)
+                latency = time.time() - timestamp - adjustTime
+                # two system time clock not sync, use adjustTime to make it reasonable
+                if latency < 0:
+                    adjustTime = adjustTime + latency
+                info = "Latency: %s   " % "{:.2f}".format(time.time() - timestamp - adjustTime)
                 imgData = stringData[0:-13]
                 # print(stringData)
             else:
@@ -76,10 +88,11 @@ def main():
             thisFrame = time.time()
             f = 1 / (thisFrame - lastFrame)
             lastFrame = thisFrame
-            framerate = "framerate: %s" % "{:.2f}".format(f)
+            framerate = "FPS "+ ("%s" % "{:.0f}".format(f)).zfill(2)
+            info = info + framerate
 
             # On Screen Display
-            cv2.putText(img,latency + " " + framerate, 
+            cv2.putText(img, info, 
             bottomLeftCornerOfText, 
             font, 
             fontScale,
