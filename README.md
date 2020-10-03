@@ -1,5 +1,5 @@
-# Datalink (4G) drone project
-Pixhawk + Raspberry Pi + 4G network drone development\
+# LTE datalink drone project
+Pixhawk + Raspberry Pi + LTE(4G) network drone development\
 It is the source code of the Raspberry Pi files.
 
 ## Tested on Hardwares/Components
@@ -9,7 +9,7 @@ It is the source code of the Raspberry Pi files.
 - Network: **HUAWEI E3372** / **HUAWEI E3370** (3G/4G)
 
 ## Support Firmware
-- Firmware: **PX4**
+- Firmware: **PX4** 1.10.0
 
 ## Features
 - Connect Pixhawk and Raspberry Pi using `mavlink-router` and `pymavlink`
@@ -27,16 +27,19 @@ It is the source code of the Raspberry Pi files.
 | jpeg-stream/receiver2.py                 | Receiving and playback the stream video (on groundstation) |
 | jpeg-stream/control.py                   | Use remote control to start, stop, recording video         |
 
+
 ## The enabled system services, in case you need to restart it
-sudo systemctl restart mavlink-router
-sudo systemctl restart jpeg-sender
-sudo systemctl restart wvdial
+    sudo systemctl restart mavlink-router
+    sudo systemctl restart jpeg-sender
+    sudo systemctl restart wvdial
 
 ## Check mavlink-router service log
-sudo journalctl -u mavlink-router
+    sudo journalctl -u mavlink-router
 
 ## Convert h264 to mp4
-/usr/bin/MP4Box -add test.h264 test.mp4 -flat
+The sender2.py will record video on .h264 format. You need MP4Box to convert it to mp4 format
+
+    /usr/bin/MP4Box -add test.h264 test.mp4 -flat
 
 ## Notes
 For more information of the project, please read [here](https://github.com/rc-bellergy/drone-notes/tree/master/ardupilot/toritaka)
