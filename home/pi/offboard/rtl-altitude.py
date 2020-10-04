@@ -2,6 +2,7 @@
 
 '''
 Adjust RTL height based on the max elevation of the RTL path.
+
 Install:
 pip3 install googlemaps
 pip3 install mavsdk
@@ -50,34 +51,38 @@ async def run():
     home_elevation =  gmaps.elevation(home_position)[0]["elevation"]
     print("Home elevation:", home_elevation)
 
-    # Monitoring drone position and update the Return to Home altitude
-    async for flight_mode in drone.telemetry.flight_mode():
-        # http://mavsdk-python-docs.s3-website.eu-central-1.amazonaws.com/plugins/telemetry.html#mavsdk.telemetry.FlightMode
-        if flight_mode == telemetry.FlightMode.POSCTL:
-            async for p in drone.telemetry.position():
-                drone_position = (p.latitude_deg, p.longitude_deg)
-                print("Drone position:", drone_position)
+    # When 'Position' flifht mode, monitoring the drone position and update the Return to Home altitude
+    while True:
 
-                # Get a list of elevations from the RTL path
-                path = [home_position, drone_position]
-                result = gmaps.elevation_along_path(path, 100)
-                df = DataFrame(result, columns=['elevation', 'location', 'resolution'])
-                max_elevation = df["elevation"].max()
-                print("Max elevation:", max_elevation)
-
-                # Update the return to home alt
-                return_alt = max_elevation - home_elevation + above_alt
-                if return_alt < default_return_alt:
-                    return_alt = default_return_alt
-
-                if return_alt > max_alt:
-                    return_alt = max_alt
-
-                await drone.action.set_return_to_launch_altitude(return_alt)
-                print("Update RTL alt:", return_alt)
-
-                await asyncio.sleep(5)
+        async for flight_mode in drone.telemetry.flight_mode():
+            if flight_mode == telemetry.FlightMode.POSCTL: #http://mavsdk-python-docs.s3-website.eu-central-1.amazonaws.com/plugins/telemetry.html#mavsdk.telemetry.FlightMode
                 break
+            
+        async for p in drone.telemetry.position():
+            drone_position = (p.latitude_deg, p.longitude_deg)
+            print("Drone position:", drone_position)
+
+            # Get a list of elevations from the RTL path
+            path = [home_position, drone_position]
+            result = gmaps.elevation_along_path(path, 100)
+            df = DataFrame(result, columns=['elevation', 'location', 'resolution'])
+            max_elevation = df["elevation"].max()
+            print("Max elevation:", max_elevation)
+
+            # Update the return to home alt
+            return_alt = max_elevation - home_elevation + above_alt
+            if return_alt < default_return_alt:
+                return_alt = default_return_alt
+
+            if return_alt > max_alt:
+                return_alt = max_alt
+
+            await drone.action.set_return_to_launch_altitude(return_alt)
+            print("Update RTL alt:", return_alt)
+
+            await asyncio.sleep(2)
+            break
+
 
     # Reset the default return alt when quit
     await drone.action.set_return_to_launch_altitude(default_return_alt)
