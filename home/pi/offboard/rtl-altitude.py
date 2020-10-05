@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 '''
-Adjust RTL height based on the max elevation of the RTL path.
+Adjust RTL altitude based on the max elevation on the RTL path.
 
 Install:
 pip3 install googlemaps

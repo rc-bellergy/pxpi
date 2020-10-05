@@ -19,13 +19,14 @@ It is the source code of the Raspberry Pi files.
 - The pilot can use radio control to switch on/off the video streaming;
 
 ## Source Files in /home/pi/
-| files in                                 | descriptions                                               |
-| ---------------------------------------- | ---------------------------------------------------------- |
-| glympse/glympse.py                       | Send drone's GPS position to Glympse                       |
-| mavlink-router-service/mavlink-router.sh | Routing mavlink from FC to GCS                             |
-| jpeg-stream/sender2.py                   | Sending low bandwidth, low latency video stream            |
-| jpeg-stream/receiver2.py                 | Receiving and playback the stream video (on groundstation) |
-| jpeg-stream/control.py                   | Use remote control to start, stop, recording video         |
+| files in                                 | descriptions                                                   |
+| ---------------------------------------- | -------------------------------------------------------------- |
+| glympse/glympse.py                       | Send drone's GPS position to Glympse                           |
+| mavlink-router-service/mavlink-router.sh | Routing mavlink from FC to GCS                                 |
+| jpeg-stream/sender2.py                   | Sending low bandwidth, low latency video stream                |
+| jpeg-stream/receiver2.py                 | Receiving and playback the stream video (run on groundstation) |
+| jpeg-stream/control.py                   | Use remote control to start, stop, recording video             |
+| offboard/rtl-altitude.py                 | Adjust RTL altitude based on the max elevation on the RTL path |
 
 
 ## The enabled system services, in case you need to restart it
