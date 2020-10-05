@@ -24,6 +24,8 @@ max_alt = 500
 above_alt = 50
 
 # Google Maps APi client
+# You need to get your api key from Gooogle
+# https://developers.google.com/maps/documentation/javascript/get-api-key
 gmaps = googlemaps.Client(key=apikey)
 
 async def run():
