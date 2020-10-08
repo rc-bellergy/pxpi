@@ -25,14 +25,13 @@ class Sender:
 
     def __init__(self, ip="192.168.192.101", port=5800, stream_quality=20, stream_size=(352, 256)):
 
-        self.ip = ip 
-        self.port = port
+        self.ip = ip # IP of ground station
+        self.port = port # port of socket
         self.stream_quality = stream_quality # JPEG quality 0-100
         self.stream_size = stream_size
-        self.streaming = False
-        self.recording = False
-        self.stoppingStreamThread = False # requested streamStop(), but waitting __streamThread() stop the thread
-        self.t1 = time.time()
+        self.streaming = False # flag of streaming video 
+        self.recording = False # flag of recording video
+        self.stoppingStreamThread = False # If TRUE, user requested streamStop(), but waitting __streamThread() stop the thread
 
         self.sock = socket.socket()
         print("Connecting to socket %s:%d" % (self.ip, self.port))
@@ -46,6 +45,7 @@ class Sender:
         self.camera = PiCamera()
         self.camera.resolution = "1024x768"
         self.camera.rotation = 180
+        self.camera.exposure_compensation = 5; #-25 to 25
         self.rawCapture = PiRGBArray(self.camera, size=self.stream_size)
 
     def changeQuality(self, qty):
@@ -69,12 +69,16 @@ class Sender:
             self.streamRestart()
             print("Change to Low Res.")
 
+    def _videoFileName(self):
+        now = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M')
+        return '/data/v-{}.h264'.format(now)
+
     def recordingStart(self):
         # Start highres. video recording
         if self.recording == False:
             print("Recording Start")
             self.recording = True
-            video_file = '/data/highres-{}.h264'.format(datetime.datetime.now())
+            video_file = self._videoFileName()
             self.camera.start_recording(video_file)
             print("Recording video to "+video_file)
 
@@ -83,6 +87,15 @@ class Sender:
             print("Recording Stop")
             self.recording = False
             self.camera.stop_recording()
+
+    # Continue the recording in the specified output; close existing output
+    def splitRecording(self):
+        if self.recording == True:
+            video_file = self._videoFileName()
+            self.camera.split_recording(video_file)
+            print("Split video to "+video_file)
+        else:
+            print("No video is recording")
 
     def streamStart(self):
         if self.streaming == False:
@@ -106,6 +119,17 @@ class Sender:
             pass
         self.streamStart()
 
+    def increaseExposure(self):
+        if self.camera.exposure_compensation < 25:
+            self.camera.exposure_compensation = self.camera.exposure_compensation + 5
+            print("Exposure compensation:", self.camera.exposure_compensation)
+
+    def reduceExposure(self):
+        if self.camera.exposure_compensation > -25:
+            self.camera.exposure_compensation = self.camera.exposure_compensation - 5
+            print("Exposure compensation:", self.camera.exposure_compensation)
+    
+
     # encode the capture image + timestamp
     # send it by socket
     def __streamThread(self):
@@ -122,10 +146,10 @@ class Sender:
             self.sock.sendall(str(len(stringData)).ljust(16).encode())
 
             # Send the data
-            self.sock.send(stringData)
+            self.sock.sendall(stringData)
 
             ## Limit 10 FPS to save bandwidth
-            time.sleep(0.1)
+            time.sleep(0.07)
 
             # Clear the stream in preparation for the next frame
             self.rawCapture.truncate(0)
