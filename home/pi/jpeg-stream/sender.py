@@ -72,7 +72,7 @@ def streamLoop():
 		rawCapture.truncate(0)
 		key = cv2.waitKey(1) & 0xFF
 
-		time.sleep(0.1) 
+		time.sleep(0.07) 
 
 # Start the stream
 # curses.wrapper(streamLoop)

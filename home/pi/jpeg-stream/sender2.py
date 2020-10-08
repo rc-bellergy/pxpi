@@ -122,12 +122,10 @@ class Sender:
             self.sock.sendall(str(len(stringData)).ljust(16).encode())
 
             # Send the data
-            self.sock.sendall(stringData)
+            self.sock.send(stringData)
 
             ## Limit 10 FPS to save bandwidth
-            while time.time() - self.t1 <= 0.1:
-                pass
-            self.t1 = time.time()
+            time.sleep(0.1)
 
             # Clear the stream in preparation for the next frame
             self.rawCapture.truncate(0)

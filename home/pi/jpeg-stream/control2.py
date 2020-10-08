@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 import time, os
 from sender2 import Sender
@@ -63,7 +63,7 @@ while True:
     time.sleep(0.1)
 
 # stop all before quit
-video_sender.recordingStop()
-video_sender.streamStop()
+# video_sender.recordingStop()
+# video_sender.streamStop()
 
 

@@ -8,7 +8,7 @@ For long-range FPV flight, it doesn't care about the image quality. It provides 
 Test streaming video is transmitted at 10FPS at 341 x 256 frames, using a bandwidth of approximately 100 Kb-150 Kb per second. It can stream real-time video in a low bandwidth network. (e.g. a weak signal 4G network)
 
 ## Low latency
-In actual tests on a weak signal a 4G network, the streaming video latency can be as low as 48ms.
+In actual tests on a weak signal a 4G network, the streaming video latency can be as low as 50ms.
 ![](references/video-latency.png)
 
 [Demo video](https://www.youtube.com/embed/BpVMlIxjAsc)
