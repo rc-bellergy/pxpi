@@ -53,7 +53,7 @@ async def run():
     home_elevation =  gmaps.elevation(home_position)[0]["elevation"]
     print("Home elevation:", home_elevation)
 
-    # When 'Position' flifht mode, monitoring the drone position and update the Return to Home altitude
+    # When 'Position' flight mode, monitoring the drone position and update the Return to Home altitude
     while True:
 
         async for flight_mode in drone.telemetry.flight_mode():
