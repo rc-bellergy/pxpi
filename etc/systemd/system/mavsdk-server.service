@@ -1,0 +1,14 @@
+[Unit]
+Description=MAVSDK Server
+Wants=zerotier-one.service
+After=network-online.target zerotier-one.service
+
+[Service]
+Type=simple
+# PIDFile=/var/run/mavlink-routerd.pid
+ExecStart=/home/pi/mavsdk_server_linux-armv6 -p 50051 udp://:14550
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
