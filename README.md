@@ -46,4 +46,5 @@ The sender2.py will record video on .h264 format. You need MP4Box to convert it 
 For more information of the project, please read [here](http://bellergy.com)
 
 ## Demo flight
-<iframe width="560" height="315" src="https://www.youtube.com/embed/rozS77k0cDc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![Demo flight youtube video](https://img.youtube.com/vi/rozS77k0cDc/0.jpg)](https://www.youtube.com/watch?v=rozS77k0cDc)
+
