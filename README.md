@@ -43,4 +43,7 @@ The sender2.py will record video on .h264 format. You need MP4Box to convert it 
     /usr/bin/MP4Box -add test.h264 test.mp4 -flat
 
 ## Notes
-For more information of the project, please read [here](https://github.com/rc-bellergy/drone-notes/tree/master/ardupilot/toritaka)
+For more information of the project, please read [here](http://bellergy.com)
+
+## Demo flight
+<iframe width="560" height="315" src="https://www.youtube.com/embed/rozS77k0cDc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
