@@ -18,6 +18,8 @@ home_elevation = 0
 default_return_alt = 0 # The ground station RTL altitude setting.
 max_alt = 500 # If something goes wrong, limit the mistake.
 
+# A proxy server to get and convert Google Map API data
+# https://github.com/rc-bellergy/droneserver/blob/master/routes/api.php
 api = "http://droneserver.dq.hk/api/rtl-altitude/"
 
 async def run():
