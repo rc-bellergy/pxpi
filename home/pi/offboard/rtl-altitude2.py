@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 '''
-Adjust RTL altitude based on the max elevation on the RTL path
+Adjust RTL altitude based on the max elevation on the RTL path.
 Note: It on work on Position flight mode
 
 Install:
@@ -11,19 +11,14 @@ pip3 install mavsdk
 
 import os
 import asyncio
-import googlemaps
-from pandas import DataFrame
+import requests
 from mavsdk import System, telemetry
-from googlemaps_apikey import apikey
 
 home_elevation = 0
 default_return_alt = 0 # The ground station RTL altitude setting.
 max_alt = 500 # If something goes wrong, limit the mistake.
 
-# Google Maps APi client
-# You need to get your api key from Gooogle
-# https://developers.google.com/maps/documentation/javascript/get-api-key
-gmaps = googlemaps.Client(key=apikey)
+api = "http://droneserver.dq.hk/api/rtl-altitude/"
 
 async def run():
     # Init the drone
@@ -55,7 +50,9 @@ async def run():
             break
 
         # Get home elevation
-        home_elevation =  gmaps.elevation(home_position)[0]["elevation"]
+        get_altitude = api + "{},{}|{},{}".format(home_position[0],home_position[1],home_position[0],home_position[1])
+        r = requests.get(get_altitude).json()
+        home_elevation =  r["max_alt"]
         print("Home elevation:", home_elevation)
 
         # When 'Position' flight mode, monitoring the drone position and update the Return to Home altitude
@@ -68,24 +65,27 @@ async def run():
                 
             if flight_mode == telemetry.FlightMode.POSCTL: 
                 async for p in drone.telemetry.position():
-                    drone_position = (p.latitude_deg, p.longitude_deg)
-                    print("Drone position:", drone_position)
 
-                    # Get a list of elevations from the RTL path
-                    path = [home_position, drone_position]
-                    result = gmaps.elevation_along_path(path, 100)
-                    df = DataFrame(result, columns=['elevation', 'location', 'resolution'])
-                    max_elevation = df["elevation"].max()
-                    print("Max elevation:", max_elevation)
+                    get_rtl_altitude= api + "{},{}|{},{}".format(home_position[0],home_position[1],p.latitude_deg,p.longitude_deg)
+                    print("Lat,Lon:",p.latitude_deg,p.longitude_deg)
+                    try:
+                        r = requests.get(get_rtl_altitude).json()
+                    except Exception as ex:
+                        print(ex)
 
-                    # Update the RTL alt
-                    return_alt = max_elevation - home_elevation + default_return_alt
-                    if return_alt < default_return_alt:
-                        return_alt = default_return_alt
-                    if return_alt > max_alt:
-                        return_alt = max_alt
-                    await drone.action.set_return_to_launch_altitude(return_alt)
-                    print("Update RTL alt:", return_alt)
+                    if r is not None: 
+                        max_elevation = r["max_alt"]
+                        print("Max elevation:", max_elevation)
+
+                        # Update the RTL alt
+                        return_alt = max_elevation - home_elevation + default_return_alt
+                        if return_alt < default_return_alt:
+                            return_alt = default_return_alt
+                        if return_alt > max_alt:
+                            return_alt = max_alt
+                        await drone.action.set_return_to_launch_altitude(return_alt)
+                        print("Update RTL alt:", return_alt)
+
                     break
 
             async for status in drone.telemetry.landed_state():
