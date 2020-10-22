@@ -2,26 +2,36 @@
 
 '''
 Adjust RTL altitude based on the max elevation on the RTL path.
-It send location to droneserver to get the altitude.
 Note: It on work on Position flight mode
-
 
 Install:
 pip3 install mavsdk
+pip3 install "python-socketio[asyncio_client]"
 '''
 
 import os
 import asyncio
 import requests
+import socketio
+import json
+import googlemaps
+
 from mavsdk import System, telemetry
+from googlemaps_apikey import apikey
 
 home_elevation = 0
 default_return_alt = 0 # The ground station RTL altitude setting.
 max_alt = 500 # If something goes wrong, limit the mistake.
+droneserver = 'http://192.168.192.103:3000'
+
+# Google Maps APi client
+# You need to get your api key from Gooogle
+# https://developers.google.com/maps/documentation/javascript/get-api-key
+gmaps = googlemaps.Client(key=apikey)
 
 # A proxy server to get and convert Google Map API data
 # https://github.com/rc-bellergy/droneserver/blob/master/routes/api.php
-api = "http://droneserver.dq.hk/api/rtl-altitude/"
+# api = "http://droneserver.dq.hk/api/rtl-altitude/"
 
 async def run():
     # Init the drone
@@ -33,6 +43,11 @@ async def run():
         if state.is_connected:
             print(f"Drone discovered with UUID: {state.uuid}")            
             break
+
+    # Connect to droneserver
+    sio = socketio.Client()
+    sio.connect(droneserver)
+    print("droneserver connected")
 
     # Get RTL altitude from ground station setting
     default_return_alt = await drone.action.get_return_to_launch_altitude()
@@ -53,9 +68,7 @@ async def run():
             break
 
         # Get home elevation
-        get_altitude = api + "{},{}|{},{}".format(home_position[0],home_position[1],home_position[0],home_position[1])
-        r = requests.get(get_altitude).json()
-        home_elevation =  r["max_alt"]
+        home_elevation =  gmaps.elevation(home_position)[0]["elevation"]
         print("Home elevation:", home_elevation)
 
         # When 'Position' flight mode, monitoring the drone position and update the Return to Home altitude
@@ -69,25 +82,29 @@ async def run():
             if flight_mode == telemetry.FlightMode.POSCTL: 
                 async for p in drone.telemetry.position():
 
-                    get_rtl_altitude= api + "{},{}|{},{}".format(home_position[0],home_position[1],p.latitude_deg,p.longitude_deg)
-                    print("Lat,Lon:",p.latitude_deg,p.longitude_deg)
-                    try:
-                        r = requests.get(get_rtl_altitude).json()
-                    except Exception as ex:
-                        print(ex)
+                    location = {
+                        "home":"{},{}".format(home_position[0], home_position[1]),
+                        "drone":"{},{}".format(p.latitude_deg,p.longitude_deg)
+                    }
+                    sio.emit('json', location)
+                    
+                    # try:
+                    #     r = requests.get(get_rtl_altitude).json()
+                    # except Exception as ex:
+                    #     print(ex)
 
-                    if r is not None: 
-                        max_elevation = r["max_alt"]
-                        print("Max elevation:", max_elevation)
+                    # if r is not None: 
+                    #     max_elevation = r["max_alt"]
+                    #     print("Max elevation:", max_elevation)
 
-                        # Update the RTL alt
-                        return_alt = max_elevation - home_elevation + default_return_alt
-                        if return_alt < default_return_alt:
-                            return_alt = default_return_alt
-                        if return_alt > max_alt:
-                            return_alt = max_alt
-                        await drone.action.set_return_to_launch_altitude(return_alt)
-                        print("Update RTL alt:", return_alt)
+                    #     # Update the RTL alt
+                    #     return_alt = max_elevation - home_elevation + default_return_alt
+                    #     if return_alt < default_return_alt:
+                    #         return_alt = default_return_alt
+                    #     if return_alt > max_alt:
+                    #         return_alt = max_alt
+                    #     await drone.action.set_return_to_launch_altitude(return_alt)
+                    #     print("Update RTL alt:", return_alt)
 
                     break
 
