@@ -29,7 +29,7 @@ async def run():
 
 def pingGroundstation():
 
-    hostname = "groundstation"
+    hostname = "groundstation.zt"
     response = os.system("ping -c 1 " + hostname)
     return response==0
 

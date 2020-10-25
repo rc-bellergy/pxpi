@@ -5,7 +5,7 @@ After=network-online.target zerotier-one.service
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/mavlink-routerd -e groundstation:14550
+ExecStart=/usr/bin/mavlink-routerd -e groundstation.zt:14550
 Restart=on-failure
 RestartSec=3
 
