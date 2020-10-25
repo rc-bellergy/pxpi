@@ -5,8 +5,7 @@ After=network-online.target zerotier-one.service
 
 [Service]
 Type=simple
-# PIDFile=/var/run/mavlink-routerd.pid
-ExecStart=/home/pi/mavlink-router-service/mavlink-router.sh
+ExecStart=/usr/bin/mavlink-routerd -e groundstation:14550
 Restart=on-failure
 RestartSec=3
 

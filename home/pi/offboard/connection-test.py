@@ -6,8 +6,13 @@ from mavsdk import System, telemetry
 
 
 async def run():
+
+    # In the RPi, need to start the mavsdk_server first
+    # The udp://127.0.0.1:14550 is connection port from mavlink-router
+    # ~/MAVSDK-Python/mavsdk/bin/mavsdk_server udp://127.0.0.1:14550
+    
     # Init the drone
-    drone = System(mavsdk_server_address='127.0.0.1', port=50051)
+    drone = System(mavsdk_server_address='localhost', port="5000")
     await drone.connect(system_address="udp://127.0.0.1:14550")
 
     print("Waiting for drone to connect...")

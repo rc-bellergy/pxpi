@@ -8,3 +8,5 @@ _resources/*
 **/config.pyc
 etc/wpa_supplicant/wpa_supplicant.conf
 home/pi/offboard/googlemaps_apikey.py
+*.pyc
+home/pi/MAVSDK-Python/

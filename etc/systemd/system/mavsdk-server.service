@@ -5,8 +5,7 @@ After=network-online.target zerotier-one.service
 
 [Service]
 Type=simple
-# PIDFile=/var/run/mavlink-routerd.pid
-ExecStart=/home/pi/mavsdk_server_linux-armv6 -p 50051 udp://:14550
+ExecStart=/home/pi/MAVSDK-Python/mavsdk/bin/mavsdk_server udp://127.0.0.1:14550 -p 5000  
 Restart=on-failure
 RestartSec=3
 
