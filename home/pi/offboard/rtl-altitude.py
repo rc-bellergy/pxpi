@@ -8,6 +8,8 @@ Install:
 pip3 install mavsdk
 pip3 install "python-socketio[asyncio_client]"
 
+Install the droneserver
+https://github.com/rc-bellergy/droneserver
 '''
 
 import os
