@@ -8,8 +8,11 @@ Install:
 pip3 install mavsdk
 pip3 install "python-socketio[asyncio_client]"
 
-Install the droneserver
+Install the droneserver:
 https://github.com/rc-bellergy/droneserver
+
+Start the mavsdk server: /home/travmix/pi/MAVSDK-Python/mavsdk/bin/
+MAVSDK-Python/mavsdk/bin/mavsdk_server udp://127.0.0.1:14550 -p 5000
 '''
 
 import os
@@ -18,8 +21,7 @@ import requests
 import socketio
 import json
 import googlemaps
-
-from mavsdk import System, telemetry
+from mavsdk import System, telemetry, action
 from googlemaps_apikey import apikey
 
 home_elevation = 0
@@ -34,10 +36,13 @@ gmaps = googlemaps.Client(key=apikey)
 
 async def run():
     # Init the drone
-    # Read here for setup macsdk_server
+    # Read here for setup mavsdk_server
     
-    drone = System(mavsdk_server_address='localhost', port="5000")
-    await drone.connect(system_address="udp://127.0.0.1:14550")
+    # drone = System(mavsdk_server_address='localhost', port="5000")
+    # await drone.connect(system_address="udp://127.0.0.1:14550")
+
+    drone = System()
+    await drone.connect(system_address="udp://:14540")
     print("Waiting for drone...")
     
     async for state in drone.core.connection_state():
@@ -53,8 +58,9 @@ async def run():
 
     # Receive RTL altutude update request from droneserver
     @sio.on('set_rtl_altitude')
-    async def set_rtl_altitude(max_elevation):         
-        print("Received max elevation:", max_elevation)
+    async def set_rtl_altitude(data):
+        max_elevation = data['max_alt']['elevation']
+        print("Received max elevation:", data['max_alt'])
 
         # Update the RTL alt
         return_alt = max_elevation - home_elevation + default_return_alt
