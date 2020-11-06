@@ -51,9 +51,10 @@ async def run():
             break
 
     # Create socket to droneserver
+    print("Connecting to droneserver")
     sio = socketio.AsyncClient()
     await sio.connect(droneserver)
-    await sio.emit('message', "Hello from rtl-altitude3.py")
+    await sio.emit('message', "Hello from rtl-altitude.py")
     print("droneserver connected")
 
     # Receive RTL altutude update request from droneserver
@@ -84,35 +85,41 @@ async def run():
             if is_armed == True:
                 break
 
-        # Get home position
+        # Get home position from the drone
         async for h in drone.telemetry.home():
             home_position = (h.latitude_deg, h.longitude_deg)
             print("Home position:", home_position)
             break
 
-        # Get home elevation
+        # Get home elevation from Google Map
         home_elevation =  gmaps.elevation(home_position)[0]["elevation"]
         print("Home elevation:", home_elevation)
 
-        # When 'Position' flight mode, send the drone location to drone server
-        while True:
-
-            # Wait Position mode
-            # http://mavsdk-python-docs.s3-website.eu-central-1.amazonaws.com/plugins/telemetry.html#mavsdk.telemetry.FlightMode
-            async for flight_mode in drone.telemetry.flight_mode():
+        # Wait the drone launch
+        print("Wait the drone launch")
+        async for state in drone.telemetry.landed_state():
+            if state == telemetry.LandedState.IN_AIR:
                 break
-                
-            if flight_mode == telemetry.FlightMode.POSCTL: 
-                async for p in drone.telemetry.position():
 
-                    location = {
-                        "home":"{},{}".format(home_position[0], home_position[1]),
-                        "drone":"{},{}".format(p.latitude_deg,p.longitude_deg)
-                    }
-                    await sio.emit('get_rtl_altitude', location)
-                    print("Drone location", location)                    
-
+        while True:
+            
+            # Wait GPS 3D Fixed
+            async for gps_info in drone.telemetry.gps_info():
+                if gps_info.fix_type.value > 2: #FixType.FIX_2D = 2 
                     break
+                else:
+                    print("Wait GPS 3D Fix")
+
+            # Update the drone location and emit to droneserver
+            async for p in drone.telemetry.position():
+                location = {
+                    "home":"{},{}".format(home_position[0], home_position[1]),
+                    "drone":"{},{}".format(p.latitude_deg,p.longitude_deg)
+                }
+                await sio.emit('get_rtl_altitude', location)
+                print("Drone location", location)                    
+
+                break
 
             async for status in drone.telemetry.landed_state():
                 break
