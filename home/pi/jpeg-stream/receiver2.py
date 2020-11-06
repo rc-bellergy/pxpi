@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # A JPEG stream receiver (Echo server)
 # It waits socket connection on port 5800
 # It will decode the data and show it on CV image viewer
