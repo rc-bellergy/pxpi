@@ -24,8 +24,8 @@ import googlemaps
 from mavsdk import System, telemetry, action
 from googlemaps_apikey import apikey
 
-home_elevation = 0
 default_return_alt = 0 # The ground station RTL altitude setting.
+home_location = None
 max_alt = 500 # If something goes wrong, limit the mistake.
 droneserver = 'http://droneserver.zt:3000'
 
@@ -57,14 +57,14 @@ async def run():
     await sio.emit('message', "Hello from rtl-altitude.py")
     print("droneserver connected")
 
-    # Receive RTL altutude update request from droneserver
+    # Events handle
     @sio.on('set_rtl_altitude')
     async def set_rtl_altitude(data):
-        max_elevation = data['max_alt']['elevation']
-        print("Received max elevation:", data['max_alt'])
+        print("Received max elevation:", data)
 
+        max_elevation = data['elevation']
         # Update the RTL alt
-        return_alt = max_elevation - home_elevation + default_return_alt
+        return_alt = max_elevation - home_location['alt'] + default_return_alt
         if return_alt < default_return_alt:
             return_alt = default_return_alt
         if return_alt > max_alt:
@@ -76,7 +76,6 @@ async def run():
     default_return_alt = await drone.action.get_return_to_launch_altitude()
     print("Default RTL altitude", default_return_alt)
 
-    # Send updated location to drone server
     while True:
 
         # Wait armed
@@ -87,13 +86,11 @@ async def run():
 
         # Get home position from the drone
         async for h in drone.telemetry.home():
-            home_position = (h.latitude_deg, h.longitude_deg)
-            print("Home position:", home_position)
+            a = gmaps.elevation((h.latitude_deg, h.longitude_deg))[0]["elevation"]
+            home_location = { "lat": h.latitude_deg, "lon": h.longitude_deg, "alt": a }
+            print("Home position", home_location)
+            await sio.emit('update_home_location', home_location)
             break
-
-        # Get home elevation from Google Map
-        home_elevation =  gmaps.elevation(home_position)[0]["elevation"]
-        print("Home elevation:", home_elevation)
 
         # Wait the drone launch
         print("Wait the drone launch")
@@ -101,6 +98,7 @@ async def run():
             if state == telemetry.LandedState.IN_AIR:
                 break
 
+        # Main Loop
         while True:
             
             # Wait GPS 3D Fixed
@@ -110,14 +108,19 @@ async def run():
                 else:
                     print("Wait GPS 3D Fix")
 
+            # Wait support flight mode
+            async for flight_mode in drone.telemetry.flight_mode():
+                if flight_mode == telemetry.FlightMode.MISSION or flight_mode == telemetry.FlightMode.OFFBOARD  or flight_mode == telemetry.FlightMode.MANUAL or flight_mode == telemetry.FlightMode.POSCTL or flight_mode == telemetry.FlightMode.RATTITUDE or flight_mode == telemetry.FlightMode.STABILIZED:
+                    break
+
             # Update the drone location and emit to droneserver
             async for p in drone.telemetry.position():
-                location = {
-                    "home":"{},{}".format(home_position[0], home_position[1]),
-                    "drone":"{},{}".format(p.latitude_deg,p.longitude_deg)
+                data = {
+                    "lat": p.latitude_deg,
+                    "lon": p.longitude_deg
                 }
-                await sio.emit('get_rtl_altitude', location)
-                print("Drone location", location)                    
+                await sio.emit('update_drone_location', data)
+                print("Drone location", data)                    
 
                 break
 
@@ -133,6 +136,9 @@ async def run():
                 break
             else:
                 await asyncio.sleep(2)
+
+
+
 
 
 if __name__ == "__main__":
