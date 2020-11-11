@@ -58,7 +58,7 @@ async def run():
     print("droneserver connected")
 
     # Events handle
-    @sio.on('set_rtl_altitude')
+    @sio.on('rtl_altitude_updated')
     async def set_rtl_altitude(data):
         print("Received max elevation:", data)
 
@@ -89,7 +89,7 @@ async def run():
             a = gmaps.elevation((h.latitude_deg, h.longitude_deg))[0]["elevation"]
             home_location = { "lat": h.latitude_deg, "lon": h.longitude_deg, "alt": a }
             print("Home position", home_location)
-            await sio.emit('update_home_location', home_location)
+            await sio.emit('home_location_updated', home_location)
             break
 
         # Wait the drone launch
@@ -119,7 +119,7 @@ async def run():
                     "lat": p.latitude_deg,
                     "lon": p.longitude_deg
                 }
-                await sio.emit('update_drone_location', data)
+                await sio.emit('drone_location_updated', data)
                 print("Drone location", data)                    
 
                 break
