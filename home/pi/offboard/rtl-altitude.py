@@ -59,10 +59,9 @@ async def run():
 
     # Events handle
     @sio.on('rtl_altitude_updated')
-    async def set_rtl_altitude(data):
-        print("Received max elevation:", data)
+    async def set_rtl_altitude(max_elevation):
+        print("Received max elevation:", max_elevation)
 
-        max_elevation = data['elevation']
         # Update the RTL alt
         return_alt = max_elevation - home_location['alt'] + default_return_alt
         if return_alt < default_return_alt:
