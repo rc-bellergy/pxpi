@@ -9,7 +9,7 @@ It is the source code of the Raspberry Pi files.
 - Network: **HUAWEI E3372** / **HUAWEI E3370** (3G/4G)
 
 ## Support Firmware
-- Firmware: **PX4** 1.10.0
+- Firmware: **PX4** 1.11.0
 
 ## Features
 - Connect Pixhawk and Raspberry Pi using `mavlink-router` and `pymavlink`
