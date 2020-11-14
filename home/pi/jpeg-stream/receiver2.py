@@ -13,7 +13,7 @@ import socket
 import cv2
 import os
 
-TCP_IP = "0.0.0.0" # Any IP can connect me
+TCP_IP = "0.0.0.0" # Any IP can connect me :)
 TCP_PORT = 5800
 
 conn = None

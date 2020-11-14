@@ -32,6 +32,7 @@ class Sender:
         self.streaming = False # flag of streaming video 
         self.recording = False # flag of recording video
         self.stoppingStreamThread = False # If TRUE, user requested streamStop(), but waitting __streamThread() stop the thread
+        self.fps = 10
 
         self.sock = socket.socket()
         print("Connecting to socket %s:%d" % (self.ip, self.port))
@@ -129,6 +130,10 @@ class Sender:
             self.camera.exposure_compensation = self.camera.exposure_compensation - 5
             print("Exposure compensation:", self.camera.exposure_compensation)
     
+    def changeFPS(self, data):
+        if data>0 and data<60:
+            self.fps = data
+        print("FPS:", self.fps)
 
     # encode the capture image + timestamp
     # send it by socket
@@ -149,7 +154,10 @@ class Sender:
             self.sock.sendall(stringData)
 
             ## Limit 10 FPS to save bandwidth
-            time.sleep(0.07)
+            s = 1/self.fps-0.03
+            if s<0:
+                s=0
+            time.sleep(s)
 
             # Clear the stream in preparation for the next frame
             self.rawCapture.truncate(0)

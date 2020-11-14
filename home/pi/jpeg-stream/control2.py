@@ -13,7 +13,7 @@ time.sleep(0.1)  # Wait camera init
 
 while True:
     print("")
-    c = raw_input("(s)tream (r)ecord (s)split (q)uit (0-9)Qty : ")
+    c = raw_input("(s)tream (r)ecord (/)split (q)uit (0-9)Qty : ")
 
     # Change video quality (0-9)
     try:
@@ -63,6 +63,18 @@ while True:
     # Quit
     if c=="q":
         break
+
+    # Change FPS
+    try:
+        if c[:1]=="f":
+            try:
+                fps = float(c[1:])
+                video_sender.changeFPS(fps)
+            except:
+                print("Wrong FPS number")
+    except:
+        pass
+
 
     time.sleep(0.2)
 

@@ -36,9 +36,28 @@ Use this script to convert .h264 to mp4
 
 ## How to strat?
 1. Change the TCP_IP setting in the sender.py. Set it to the receiver IP.
-2. Start the sender.py on Raspberry PI
-3. Start the receiver.py on your PC/Mac
+2. Start the receiver2.py on your PC/Mac
+2. Start the control2.py on Raspberry PI
+3. When the `control2` started, the receiver will show
+```
+    ('Connected by', ('192.168.192.168', 35302))
+    Waitting video stream ...
+```
+4. Input 's' (strat stream) in the `control2`
+5. The video will start
 
+## Commands List
+| Commands | Description |
+| --- | ---|
+| s | Start / Stop the video stream |
+| r | Strat  / Stop recording video |
+| / | Split the recarding video |
+| h | Stream HD video |
+| l | Stream Low-res. video (default) |
+| (0-9) | Change stream video quality (default:2) |
+| f(1-30) | Change the FPS of stream video |
+
+---
 ## Credit
-The original code was created by `Maxcr1`:
+The code video streaming code was created by `Maxcr1`:
 https://github.com/Maxcr1/TinyStream

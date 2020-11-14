@@ -25,7 +25,7 @@ It is the source code of the Raspberry Pi files.
 | mavlink-router-service/mavlink-router.sh | Routing mavlink from FC to GCS                                 |
 | jpeg-stream/sender2.py                   | Sending low bandwidth, low latency video stream                |
 | jpeg-stream/receiver2.py                 | Receiving and playback the stream video (run on groundstation) |
-| jpeg-stream/control.py                   | Use remote control to start, stop, recording video             |
+| jpeg-stream/control2.py                  | Use remote control to start, stop, recording video             |
 | offboard/rtl-altitude.py                 | Adjust RTL altitude based on the max elevation on the RTL path |
 
 
