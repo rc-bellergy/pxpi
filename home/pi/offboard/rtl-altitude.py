@@ -6,12 +6,14 @@ Note: It on work on Position flight mode
 
 Install:
 pip3 install mavsdk
+pip3 install python-socketio
 pip3 install "python-socketio[asyncio_client]"
+pip install googlemaps
 
 Install the droneserver:
 https://github.com/rc-bellergy/droneserver
 
-Start the mavsdk server: /home/travmix/pi/MAVSDK-Python/mavsdk/bin/
+Start the mavsdk server: /{the-path-to}/MAVSDK-Python/mavsdk/bin/
 MAVSDK-Python/mavsdk/bin/mavsdk_server udp://127.0.0.1:14550 -p 5000
 '''
 
@@ -24,10 +26,10 @@ import googlemaps
 from mavsdk import System, telemetry, action
 from googlemaps_apikey import apikey
 
-default_return_alt = 0 # The ground station RTL altitude setting.
+default_return_alt = 50 # The ground station RTL altitude setting will override it
 home_location = None
-max_alt = 500 # If something goes wrong, limit the mistake.
-droneserver = 'http://droneserver.zt:3000'
+max_alt = 500.00 # If something goes wrong, limit the mistake.
+droneserver = 'http://droneserver.zt:3000?user=Drone'
 
 # Google Maps APi client
 # You need to get your api key from Gooogle
@@ -42,7 +44,7 @@ async def run():
     # await drone.connect(system_address="udp://127.0.0.1:14550")
 
     drone = System()
-    await drone.connect(system_address="udp://:14540")
+    await drone.connect(system_address="udp://:14540") # connect simulator
     print("Waiting for drone...")
     
     async for state in drone.core.connection_state():
@@ -54,7 +56,7 @@ async def run():
     print("Connecting to droneserver")
     sio = socketio.AsyncClient()
     await sio.connect(droneserver)
-    await sio.emit('message', "Hello from rtl-altitude.py")
+    # await sio.emit('message', "Hello from rtl-altitude.py")
     print("droneserver connected")
 
     # Events handle
@@ -73,7 +75,7 @@ async def run():
 
     # Get RTL altitude from ground station setting
     default_return_alt = await drone.action.get_return_to_launch_altitude()
-    print("Default RTL altitude", default_return_alt)
+    print("Get default RTL altitude:", default_return_alt)
 
     while True:
 
@@ -108,9 +110,9 @@ async def run():
                     print("Wait GPS 3D Fix")
 
             # Wait support flight mode
-            async for flight_mode in drone.telemetry.flight_mode():
-                if flight_mode == telemetry.FlightMode.MISSION or flight_mode == telemetry.FlightMode.OFFBOARD  or flight_mode == telemetry.FlightMode.MANUAL or flight_mode == telemetry.FlightMode.POSCTL or flight_mode == telemetry.FlightMode.RATTITUDE or flight_mode == telemetry.FlightMode.STABILIZED:
-                    break
+            # async for flight_mode in drone.telemetry.flight_mode():
+            #     if flight_mode == telemetry.FlightMode.MISSION or flight_mode == telemetry.FlightMode.OFFBOARD  or flight_mode == telemetry.FlightMode.MANUAL or flight_mode == telemetry.FlightMode.POSCTL or flight_mode == telemetry.FlightMode.RATTITUDE or flight_mode == telemetry.FlightMode.STABILIZED:
+            #         break
 
             # Update the drone location and emit to droneserver
             async for p in drone.telemetry.position():
