@@ -110,20 +110,29 @@ async def run():
                     print("Wait GPS 3D Fix")
 
             # Wait support flight mode
-            # async for flight_mode in drone.telemetry.flight_mode():
-            #     if flight_mode == telemetry.FlightMode.MISSION or flight_mode == telemetry.FlightMode.OFFBOARD  or flight_mode == telemetry.FlightMode.MANUAL or flight_mode == telemetry.FlightMode.POSCTL or flight_mode == telemetry.FlightMode.RATTITUDE or flight_mode == telemetry.FlightMode.STABILIZED:
-            #         break
+            async for flight_mode in drone.telemetry.flight_mode():
+                if flight_mode == telemetry.FlightMode.MISSION or flight_mode == telemetry.FlightMode.OFFBOARD  or flight_mode == telemetry.FlightMode.MANUAL or flight_mode == telemetry.FlightMode.POSCTL or flight_mode == telemetry.FlightMode.RATTITUDE or flight_mode == telemetry.FlightMode.STABILIZED or flight_mode == telemetry.FlightMode.RETURN_TO_LAUNCH:
+                    break
 
             # Update the drone location and emit to droneserver
+            async for euler in drone.telemetry.attitude_euler():
+                print(euler) #EulerAngle: [roll_deg: -11.161903381347656, pitch_deg: 0.14322324097156525, yaw_deg: -56.14920425415039]
+                break
+
             async for p in drone.telemetry.position():
                 data = {
                     "lat": p.latitude_deg,
-                    "lon": p.longitude_deg
+                    "lon": p.longitude_deg,
+                    "alt": p.relative_altitude_m,
+                    "heading": euler.yaw_deg
                 }
                 await sio.emit('drone_location_updated', data)
                 print("Drone location", data)                    
 
                 break
+
+
+            
 
             async for status in drone.telemetry.landed_state():
                 break
