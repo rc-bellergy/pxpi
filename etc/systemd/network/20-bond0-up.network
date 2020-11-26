@@ -1,0 +1,8 @@
+[Match]
+Name=bond0
+[Network]
+# to use static IP (with your settings) toggle commenting the next 4 lines.
+#DHCP=yes
+Address=192.168.50.60/24
+Gateway=192.168.50.1
+DNS=8.8.8.8 8.8.4.4

@@ -1,0 +1,9 @@
+[NetDev]
+# status: cat /proc/net/bonding/bond0
+Name=bond0
+Kind=bond
+[Bond]
+#Mode=active-backup
+Mode=balance-rr
+MIIMonitorSec=500ms
+MinLinks=1

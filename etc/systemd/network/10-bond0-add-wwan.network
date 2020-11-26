@@ -1,0 +1,5 @@
+[Match]
+Name=wwan0
+[Network]
+DHCP=yes
+Bond=bond0

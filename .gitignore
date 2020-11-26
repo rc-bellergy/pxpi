@@ -11,3 +11,6 @@ home/pi/offboard/googlemaps_apikey.py
 *.pyc
 home/pi/MAVSDK-Python/
 .DS_Store
+etc/hosts
+disk_images/
+etc/wpa_supplicant/
