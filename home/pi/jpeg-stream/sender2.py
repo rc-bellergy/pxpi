@@ -1,6 +1,9 @@
+#!/usr/bin/env python
+
 # A JPEG stream sender (Echo client)
 
-import datetime, time
+import datetime
+import time
 import threading
 import socket
 import numpy
@@ -14,6 +17,7 @@ Capture Raspberry Pi camera,
 - save high-res .h264 video to disk
 '''
 
+
 class Sender:
 
     '''
@@ -22,17 +26,17 @@ class Sender:
     :param int stream_quality: the JPEG compression rate (0-100)
     :param tuple stream_quality: the size of streaming video (width, height)
     '''
+    def __init__(self, ip="192.168.192.101", port=5800, stream_quality=15, stream_size=(352, 256), fps=4.0):
 
-    def __init__(self, ip="192.168.192.101", port=5800, stream_quality=20, stream_size=(352, 256)):
-
-        self.ip = ip # IP of ground station
-        self.port = port # port of socket
-        self.stream_quality = stream_quality # JPEG quality 0-100
+        self.ip = ip  # IP of ground station
+        self.port = port  # port of socket
+        self.stream_quality = stream_quality  # JPEG quality 0-100
         self.stream_size = stream_size
-        self.streaming = False # flag of streaming video 
-        self.recording = False # flag of recording video
-        self.stoppingStreamThread = False # If TRUE, user requested streamStop(), but waitting __streamThread() stop the thread
-        self.fps = 10
+        self.streaming = False  # flag of streaming video
+        self.recording = False  # flag of recording video
+        # If TRUE, user requested streamStop(), but waitting __streamThread() stop the thread
+        self.stoppingStreamThread = False
+        self.fps = fps
 
         self.sock = socket.socket()
         print("Connecting to socket %s:%d" % (self.ip, self.port))
@@ -45,9 +49,13 @@ class Sender:
         # initialize the camera and grab a reference to the raw camera capture
         self.camera = PiCamera()
         self.camera.resolution = "1024x768"
-        self.camera.rotation = 180
-        self.camera.exposure_compensation = 5; #-25 to 25
+        # self.camera.rotation = 180
+        self.camera.exposure_compensation = 5  # -25 to 25
         self.rawCapture = PiRGBArray(self.camera, size=self.stream_size)
+
+        print("Stream quality:", self.stream_quality)
+        print("Stream size:", self.stream_size)
+        print("FPS:", self.fps)
 
     def changeQuality(self, qty):
         if qty > 100:
@@ -129,9 +137,9 @@ class Sender:
         if self.camera.exposure_compensation > -25:
             self.camera.exposure_compensation = self.camera.exposure_compensation - 5
             print("Exposure compensation:", self.camera.exposure_compensation)
-    
+
     def changeFPS(self, data):
-        if data>0 and data<60:
+        if data > 0 and data < 60:
             self.fps = data
         print("FPS:", self.fps)
 
@@ -145,7 +153,7 @@ class Sender:
             data = numpy.array(imgencode)
 
             # Add timestamp
-            stringData = data.tostring() + str(time.time()).ljust(13) 
+            stringData = data.tostring() + str(time.time()).ljust(13)
 
             # Send the size of the data for efficient unpacking
             self.sock.sendall(str(len(stringData)).ljust(16).encode())
@@ -153,10 +161,10 @@ class Sender:
             # Send the data
             self.sock.sendall(stringData)
 
-            ## Limit 10 FPS to save bandwidth
+            # Limit FPS to save bandwidth
             s = 1/self.fps-0.03
-            if s<0:
-                s=0
+            if s < 0:
+                s = 0
             time.sleep(s)
 
             # Clear the stream in preparation for the next frame
@@ -167,7 +175,7 @@ class Sender:
                 self.stoppingStreamThread = False
                 print("Video stream stop")
                 break
-            
+
 
 # Testing
 # s=Sender()

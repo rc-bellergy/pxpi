@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 import time, os
 from sender2 import Sender
@@ -13,7 +13,7 @@ time.sleep(0.1)  # Wait camera init
 
 while True:
     print("")
-    c = raw_input("(s)tream (r)ecord (/)split (q)uit (0-9)Qty : ")
+    c = raw_input("(s)tream (r)ecord (0-9)Qty (f1-30)FPS (q)uit:")
 
     # Change video quality (0-9)
     try:
@@ -21,6 +21,8 @@ while True:
         if c>=0 and c<=9:
             qty = c * 10
             video_sender.changeQuality(qty)
+        if c>=10 and c<=100:
+            video_sender.changeQuality(c)
     except ValueError:
         pass
 
