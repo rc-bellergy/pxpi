@@ -5,7 +5,7 @@
 import datetime
 import time
 import threading
-import socket
+import socket, IN
 import numpy
 from picamera import PiCamera, Color
 from picamera.array import PiRGBArray
@@ -26,6 +26,7 @@ class Sender:
     :param int stream_quality: the JPEG compression rate (0-100)
     :param tuple stream_quality: the size of streaming video (width, height)
     '''
+
     def __init__(self, ip="192.168.192.101", port=5800, stream_quality=15, stream_size=(352, 256), fps=4.0):
 
         self.ip = ip  # IP of ground station
@@ -39,6 +40,8 @@ class Sender:
         self.fps = fps
 
         self.sock = socket.socket()
+        # self.sock.setsockopt(socket.SOL_SOCKET, IN.SO_BINDTODEVICE, "zt2lrwgvd2"+'\0')
+
         print("Connecting to socket %s:%d" % (self.ip, self.port))
         self.sock.connect((self.ip, self.port))
 
@@ -56,6 +59,7 @@ class Sender:
         print("Stream quality:", self.stream_quality)
         print("Stream size:", self.stream_size)
         print("FPS:", self.fps)
+
 
     def changeQuality(self, qty):
         if qty > 100:
