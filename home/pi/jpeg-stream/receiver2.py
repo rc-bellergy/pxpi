@@ -69,10 +69,10 @@ def main():
                 stringData = recvall(conn, int(length))
                 timestamp = float(stringData[-13:])
                 latency = time.time() - timestamp - adjustTime
-                # two system time clock not sync, use adjustTime to make it reasonable
+                # two system time clock not 100% sync, use adjustTime to make it reasonable
                 if latency < 0:
                     adjustTime = adjustTime + latency
-                info = "Latency: %s   " % "{:.2f}".format(time.time() - timestamp - adjustTime)
+                info = "Latency: %s    " % "{:.2f}".format(time.time() - timestamp - adjustTime)
                 imgData = stringData[0:-13]
                 # print(stringData)
             else:
