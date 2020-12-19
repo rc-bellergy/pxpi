@@ -52,7 +52,7 @@ class Sender:
         # initialize the camera and grab a reference to the raw camera capture
         self.camera = PiCamera()
         self.camera.resolution = "1024x768"
-        # self.camera.rotation = 180
+        self.camera.rotation = 180
         self.camera.exposure_compensation = 5  # -25 to 25
         self.rawCapture = PiRGBArray(self.camera, size=self.stream_size)
 
@@ -151,6 +151,7 @@ class Sender:
     # send it by socket
     def __streamThread(self):
         for frame in self.camera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True, resize=self.stream_size):
+            t = time.time()
             image = frame.array
             encode_param = [IMWRITE_JPEG_QUALITY, self.stream_quality]
             result, imgencode = imencode('.jpg', image, encode_param)
@@ -165,12 +166,6 @@ class Sender:
             # Send the data
             self.sock.sendall(stringData)
 
-            # Limit FPS to save bandwidth
-            s = 1/self.fps-0.03
-            if s < 0:
-                s = 0
-            time.sleep(s)
-
             # Clear the stream in preparation for the next frame
             self.rawCapture.truncate(0)
 
@@ -179,6 +174,12 @@ class Sender:
                 self.stoppingStreamThread = False
                 print("Video stream stop")
                 break
+
+            # Limit FPS to save bandwidth
+            s = 1/self.fps-(time.time()-t)
+            if s < 0:
+                s = 0
+            time.sleep(s)
 
 
 # Testing
