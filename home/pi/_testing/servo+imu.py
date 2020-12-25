@@ -41,7 +41,7 @@ sleep(2)
 try:
      while True:
 
-        accel = imu.get_accel_data()
+        accel = imu_to_deg(imu.get_accel_data()['y']) # keep it to 0 deg
         rotate = target - imu_to_deg(accel['y'])
         if rotate < -15:
             rotate = -15

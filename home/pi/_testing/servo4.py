@@ -18,14 +18,20 @@ pwm.set_PWM_frequency(PIN, 50)
 
 pwm.set_servo_pulsewidth(PIN, 0) # Starts (500-2500) or stops (0) servo pulses on the GPIO
 
-x = range(700, 1700, 3)
+x = range(500, 1700, 3)
 
 try:
     while True:
-        for n in x:
-            pwm.set_servo_pulsewidth(PIN, n)
-            print(n)
-            sleep(0.01)
+        pwm.set_servo_pulsewidth(PIN, 2000) # 90 deg down
+        sleep(1)
+        pwm.set_servo_pulsewidth(PIN, 1000) # 0 deg level
+        sleep(1)
+
+    # while True:
+    #     for n in x:
+    #         pwm.set_servo_pulsewidth(PIN, n)
+    #         print(n)
+    #         sleep(0.01)
 
 except KeyboardInterrupt:
      pwm.set_PWM_dutycycle(PIN, 0)

@@ -31,12 +31,12 @@ Use this script to convert .h264 to mp4
 (Tested: Raspberry PI 3 and Raspberry Pi Camera v1.3)
 
 ### Receiver
-- Any machine that can run Python 2 or 3\
-(Tested: MacbookPro with Python 3)
+Moved to:
+https://github.com/rc-bellergy/groundstation
 
 ## How to strat?
 1. Change the TCP_IP setting in the sender.py. Set it to the receiver IP.
-2. Start the receiver2.py on your PC/Mac
+2. Start the receiver.py on your PC/Mac
 2. Start the control2.py on Raspberry PI
 3. When the `control2` started, the receiver will show
 ```
