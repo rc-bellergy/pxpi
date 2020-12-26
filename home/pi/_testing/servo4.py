@@ -22,10 +22,22 @@ x = range(500, 1700, 3)
 
 try:
     while True:
-        pwm.set_servo_pulsewidth(PIN, 2000) # 90 deg down
-        sleep(1)
+
+        pwm.set_servo_pulsewidth(PIN, 2000) # 90 deg down (max)
+        sleep(0.5)
+        pwm.set_servo_pulsewidth(PIN, 1800) # 72 deg down
+        sleep(0.5)
+        pwm.set_servo_pulsewidth(PIN, 1600) # 54 deg down
+        sleep(0.5)
+        pwm.set_servo_pulsewidth(PIN, 1400) # 36 deg down
+        sleep(0.5)
+        pwm.set_servo_pulsewidth(PIN, 1200) # 18 deg down
+        sleep(0.5)
         pwm.set_servo_pulsewidth(PIN, 1000) # 0 deg level
         sleep(1)
+        pwm.set_servo_pulsewidth(PIN, 800) # 18 deg up (max)
+        sleep(0.5)
+
 
     # while True:
     #     for n in x:
