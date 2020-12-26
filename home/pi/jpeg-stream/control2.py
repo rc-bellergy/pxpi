@@ -2,6 +2,8 @@
 
 import time, os
 from sender2 import Sender
+import pigpio
+
 
 streaming = False
 recording = False
@@ -9,7 +11,23 @@ recording = False
 video_sender = Sender()
 time.sleep(0.1)  # Wait camera init
 
+# Camera servo
+PIN=24              # Camera serbo at GPIO24 PIN
+CAM_LEVEL = 1000
+CAM_MAX_UP = 800
+CAM_MAX_DOWN = 2000
+pwm = pigpio.pi()   # Accesses the local Pi's GPIO
+pwm.set_mode(PIN, pigpio.OUTPUT) # Set GPIO24 as output
+pwm.set_PWM_frequency(PIN, 50)
 
+# Testing move
+pwm.set_servo_pulsewidth(PIN, 0)
+time.sleep(0.1)
+pwm.set_servo_pulsewidth(PIN, CAM_MAX_UP)  # 18 deg up (max)
+time.sleep(1)
+pwm.set_servo_pulsewidth(PIN, CAM_MAX_DOWN) # 90 deg down (max)
+time.sleep(1)
+pwm.set_servo_pulsewidth(PIN, CAM_LEVEL) # Level
 
 while True:
     print("")
@@ -61,7 +79,15 @@ while True:
     # Change to low-resolution video 
     if c=="l":
         video_sender.changeResolution("SD")
-            
+
+    # Camera angle
+    if c=="vl": # view level
+        pwm.set_servo_pulsewidth(PIN, CAM_LEVEL) 
+    if c=="vu": # view level
+        pwm.set_servo_pulsewidth(PIN, CAM_MAX_UP) 
+    if c=="vd": # view level
+        pwm.set_servo_pulsewidth(PIN, CAM_MAX_DOWN)    
+                 
     # Quit
     if c=="q":
         break
