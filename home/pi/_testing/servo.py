@@ -4,7 +4,7 @@ import RPi.GPIO as GPIO         ## pip3 install RPi.GPIO
 import time
  
 GPIO.setmode(GPIO.BCM)          ## Use BOARD pin numbering.
-GPIO.setup(24, GPIO.OUT)        ## GPIO24
+GPIO.setup(23, GPIO.OUT)        ## GPIO23
 
 pwm=GPIO.PWM(24,80)             ## PWM Frequency
 pwm.start(5)
