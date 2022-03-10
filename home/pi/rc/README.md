@@ -1,9 +1,11 @@
-# (NOT IN USE) Radio control listener
+# (TESTING) Radio control listener
+## Install
+    pip install pymavlink
+
+## Enable
+    sudo systemctl enable radio-control.service
 
 ## Start
-It will auto start when system boot.\
-Manual start:
-
     sudo systemctl start radio-control.service
 
 ## Restart

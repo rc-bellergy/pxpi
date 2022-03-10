@@ -6,9 +6,9 @@ from mavsdk import System
 
 async def print_flight_mode():
     drone = System()
-    await drone.connect(system_address="udp://:14540")
-
     print("Waiting for drone to connect...")
+    await drone.connect(system_address="udp://127.0.0.1:14550")
+
     async for state in drone.core.connection_state():
         if state.is_connected:
             print(f"Drone discovered with UUID: {state.uuid}")

@@ -12,13 +12,13 @@ async def run():
     # ~/MAVSDK-Python/mavsdk/bin/mavsdk_server udp://127.0.0.1:14550
     
     # Init the drone
-    drone = System(mavsdk_server_address='localhost', port="5000")
-    await drone.connect(system_address="udp://127.0.0.1:14550")
-
+    drone = System()
     print("Waiting for drone to connect...")
+    await drone.connect(system_address="udp://:14550")
+
     async for state in drone.core.connection_state():
         if state.is_connected:
-            print(f"Drone discovered with UUID: {state.uuid}")
+            print(state)
             break
 
     # If ping ground station fail, return to launch

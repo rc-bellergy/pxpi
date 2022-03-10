@@ -4,7 +4,7 @@
 # Update the data below and save file as config.py
 
 drone = { 
-    "name": "PxPi" ,
+    "name": "pxpi" ,
     "endpoint": "udpin:127.0.0.1:14550" }
 
 # Register glympse API:

@@ -14,3 +14,4 @@ home/pi/MAVSDK-Python/
 etc/hosts
 disk_images/
 etc/wpa_supplicant/
+boot/config.txt
