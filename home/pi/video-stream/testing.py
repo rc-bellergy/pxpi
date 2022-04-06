@@ -6,13 +6,17 @@ def kill(proc_pid):
         proc.kill()
     process.kill()
 
-proc = subprocess.Popen("./stream.sh", stdout=subprocess.PIPE, shell=True)
-print("Start")
+while True:
+    proc = subprocess.Popen("./stream.sh", stdout=subprocess.PIPE, shell=True)
+    print("Start")
 
+    time.sleep(5)
 
+    try:
+        kill(proc.pid)
+        print("kill")
+    except:
+        print("except")
 
-try:
-    proc.wait(timeout=10)
-except subprocess.TimeoutExpired:
-    kill(proc.pid)
-    print("kill")
+    time.sleep(5)
+

@@ -1,8 +1,17 @@
 #!/usr/bin/env python3
 
-import os, subprocess
+# When drone armed, start the video streaming
+# when disarmed, kill the video streaming
+
+import os, subprocess, psutil
 import asyncio
 from mavsdk import System, telemetry
+
+def kill(proc_pid):
+    process = psutil.Process(proc_pid)
+    for proc in process.children(recursive=True):
+        proc.kill()
+    process.kill()
 
 async def run():
 
@@ -20,19 +29,23 @@ async def run():
 
     async for is_armed in drone.telemetry.armed():
         if is_armed:
-            print("Armed")
             if video_streaming == False:
+                print("Armed")
+                # Start video stream process
                 video_streaming = True
-                subprocess.Popen()
-                os.system("./stream.sh")
+                proc = subprocess.Popen("./stream.sh", stdout=subprocess.PIPE, shell=True)
                 print("Video Streaming Start")
         else:
-            print("Disarmed")
             if video_streaming:
-                video_streaming = False
+                print("Disarmed")
                 # Kill video stream process
+                video_streaming = False
+                try:
+                    kill(proc.pid)
+                    print("Video Streaming Stop")
+                except:
+                    print("Loop")
 
-                print("Video Streaming Stop")
         await asyncio.sleep(1)
 
 if __name__ == "__main__":

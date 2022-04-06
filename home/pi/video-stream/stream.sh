@@ -2,7 +2,7 @@
 
 NOW=$(date +"%Y%m%d-%H%M")
 VIDEO_FILE=/home/pi/video-stream/videos/$NOW-livecam.h264
-UDP_IP=192.168.192.102 # The receiver IP
+UDP_IP=192.168.192.101 # The receiver IP
 UDP_PORT=5600
 
 /usr/bin/raspivid -n -w 640 -h 360 -b 1000000 -fps 15 --flush --timeout 0 -o - | \
