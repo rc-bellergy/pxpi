@@ -23,7 +23,7 @@ async def run():
 
     # If ping ground station fail, return to launch
     async for flight_mode in drone.telemetry.flight_mode():
-        print(flight_mode)
+        print("Flight mode:",flight_mode)
         await asyncio.sleep(1)
 
 
