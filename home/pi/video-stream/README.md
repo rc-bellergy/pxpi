@@ -1,4 +1,4 @@
-# Voideo Stream using gstreamer
+# Video Stream using gstreamer
 Tested OS: Debian Bullseye (Raspberry Pi)
 
 ## References
