@@ -33,7 +33,7 @@ async def run():
                 print("Armed")
                 # Start video stream process
                 video_streaming = True
-                proc = subprocess.Popen("./stream.sh", stdout=subprocess.PIPE, shell=True)
+                proc = subprocess.Popen("/home/pi/video-stream/stream.sh", shell=True)
                 print("Video Streaming Start")
         else:
             if video_streaming:

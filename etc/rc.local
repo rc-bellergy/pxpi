@@ -17,8 +17,10 @@ if [ "$_IP" ]; then
   printf "My IP address is %s\n" "$_IP"
 fi
 
-# Check Wifi
+# Start check-wifi 
 /usr/bin/python /home/pi/pushbullet/check-wifi.py
 
-# 
+# Strat video-control
+/usr/bin/python /home/pi/video-stream/controller.py
+
 exit 0

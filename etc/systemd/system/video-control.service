@@ -1,10 +1,10 @@
 [Unit]
-Description=Radio Control Service
+Description=Video Control Service
 Wants=zerotier-one.service
 After=network-online.target zerotier-one.service
 
 [Service]
-ExecStart=/usr/bin/python /home/pi/rc/rc.py
+ExecStart=/usr/bin/python /home/pi/video-stream/controller.py
 Restart=on-failure
 RestartSec=5
 
